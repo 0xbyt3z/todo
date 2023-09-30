@@ -1,0 +1,41 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  allUsers: [User!]!
+  getTodoList(id: String!): TodoList!
+  getTodoLists(uId: String!): [TodoList!]!
+  getUser(id: String!): User!
+}
+
+type Todo {
+  category: String
+  completed: Boolean!
+  created_at: DateTime
+  deadline: DateTime
+  id: ID!
+  lId: String!
+  remarks: String!
+  title: String!
+}
+
+type TodoList {
+  Todo: [Todo!]!
+  created_at: DateTime
+  id: ID!
+  title: String!
+  uId: String!
+}
+
+type User {
+  TodoList: [TodoList!]!
+  created_at: DateTime
+  id: ID!
+  name: String!
+}

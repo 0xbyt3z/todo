@@ -11,13 +11,18 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  name       String
-  created_at DateTime @default(now())
+  id             String           @id @default(cuid())
+  name           String
+  created_at     DateTime         @default(now())
+  TodoList       TodoList[]
+  Usercategories Usercategories[]
 }
 
 model TodoList {
   id         String   @id @default(cuid())
+  uId        String
+  title      String
+  user       User     @relation(fields: [uId], references: [id])
   created_at DateTime @default(now())
   Todo       Todo[]
 }
@@ -30,5 +35,14 @@ model Todo {
   remarks    String
   completed  Boolean
   deadline   DateTime
+  category   String
   created_at DateTime @default(now())
+}
+
+model Usercategories {
+  id    String @id @default(cuid())
+  uId   String
+  user  User   @relation(fields: [uId], references: [id])
+  name  String
+  color String
 }
