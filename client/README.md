@@ -8,3 +8,9 @@ issues
 ideas
 
 1. user defined categories
+
+resources
+
+1. for implementing authentication
+   1. https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-proof-key-for-code-exchange-pkce
+   2. https://www.keycloak.org/documentation.html
