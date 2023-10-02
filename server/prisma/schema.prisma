@@ -32,10 +32,10 @@ model Todo {
   lId        String
   list       TodoList @relation(fields: [lId], references: [id])
   title      String
-  remarks    String
-  completed  Boolean
+  remarks    String?
+  completed  Boolean  @default(false)
   deadline   DateTime
-  category   String
+  category   String?
   created_at DateTime @default(now())
 }
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { GetUserInput } from './dto/user.input';
+import { todoInput } from './dto/todo.input';
 
 @Injectable()
 export class TodoService {
@@ -33,7 +34,7 @@ export class TodoService {
   }
 
   async getTodoList(id: string) {
-    const res = await this.prisma.todoList.findUnique({
+    return await this.prisma.todoList.findUnique({
       where: {
         id,
       },
@@ -41,9 +42,16 @@ export class TodoService {
         Todo: true,
       },
     });
+  }
 
-    console.log(res);
-
-    return res;
+  async addTodo(data: todoInput) {
+    return await this.prisma.todo.create({
+      data: {
+        deadline: data.deadline,
+        completed: data.completed,
+        title: data.title,
+        lId: data.lId,
+      },
+    });
   }
 }

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Todo" ALTER COLUMN "remarks" DROP NOT NULL,
+ALTER COLUMN "completed" SET DEFAULT false,
+ALTER COLUMN "category" DROP NOT NULL;

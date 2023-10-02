@@ -39,7 +39,7 @@ let TodoService = class TodoService {
         return res;
     }
     async getTodoList(id) {
-        const res = await this.prisma.todoList.findUnique({
+        return await this.prisma.todoList.findUnique({
             where: {
                 id,
             },
@@ -47,8 +47,16 @@ let TodoService = class TodoService {
                 Todo: true,
             },
         });
-        console.log(res);
-        return res;
+    }
+    async addTodo(data) {
+        return await this.prisma.todo.create({
+            data: {
+                deadline: data.deadline,
+                completed: data.completed,
+                title: data.title,
+                lId: data.lId,
+            },
+        });
     }
 };
 exports.TodoService = TodoService;

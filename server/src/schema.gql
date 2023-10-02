@@ -7,6 +7,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Mutation {
+  addTodo(todoData: todoInput!): Todo!
+  addUser(id: String!): User!
+}
+
 type Query {
   allUsers: [User!]!
   getTodoList(id: String!): TodoList!
@@ -38,4 +43,11 @@ type User {
   created_at: DateTime
   id: ID!
   name: String!
+}
+
+input todoInput {
+  completed: Boolean!
+  deadline: String!
+  lId: String!
+  title: String!
 }

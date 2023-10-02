@@ -1,4 +1,5 @@
 import { PrismaService } from 'src/prisma.service';
+import { todoInput } from './dto/todo.input';
 export declare class TodoService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -44,6 +45,16 @@ export declare class TodoService {
         id: string;
         uId: string;
         title: string;
+        created_at: Date;
+    }>;
+    addTodo(data: todoInput): Promise<{
+        id: string;
+        lId: string;
+        title: string;
+        remarks: string;
+        completed: boolean;
+        deadline: Date;
+        category: string;
         created_at: Date;
     }>;
 }

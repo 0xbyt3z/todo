@@ -16,6 +16,7 @@ exports.TodoResolver = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const todo_model_1 = require("./models/todo.model");
 const todo_service_1 = require("./todo.service");
+const todo_input_1 = require("./dto/todo.input");
 let TodoResolver = class TodoResolver {
     constructor(todoService) {
         this.todoService = todoService;
@@ -33,7 +34,10 @@ let TodoResolver = class TodoResolver {
         return this.todoService.getTodoList(id);
     }
     async addUser(id) {
-        return this.todoService.getTodoList(id);
+        return [];
+    }
+    async addTodo(todoData) {
+        return this.todoService.addTodo(todoData);
     }
 };
 exports.TodoResolver = TodoResolver;
@@ -65,12 +69,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getTodoList", null);
 __decorate([
-    (0, graphql_1.Mutation)(),
+    (0, graphql_1.Mutation)((returns) => todo_model_1.User),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "addUser", null);
+__decorate([
+    (0, graphql_1.Mutation)((returns) => todo_model_1.Todo),
+    __param(0, (0, graphql_1.Args)('todoData')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [todo_input_1.todoInput]),
+    __metadata("design:returntype", Promise)
+], TodoResolver.prototype, "addTodo", null);
 exports.TodoResolver = TodoResolver = __decorate([
     (0, graphql_1.Resolver)(),
     __metadata("design:paramtypes", [todo_service_1.TodoService])
