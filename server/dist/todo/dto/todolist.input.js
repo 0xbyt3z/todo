@@ -9,16 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetUserInput = void 0;
+exports.TodoListInput = void 0;
 const graphql_1 = require("@nestjs/graphql");
-let GetUserInput = class GetUserInput {
+let TodoListInput = class TodoListInput {
 };
-exports.GetUserInput = GetUserInput;
+exports.TodoListInput = TodoListInput;
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], GetUserInput.prototype, "id", void 0);
-exports.GetUserInput = GetUserInput = __decorate([
+], TodoListInput.prototype, "uId", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], TodoListInput.prototype, "title", void 0);
+exports.TodoListInput = TodoListInput = __decorate([
     (0, graphql_1.InputType)()
-], GetUserInput);
-//# sourceMappingURL=user.input%20copy.js.map
+], TodoListInput);
+//# sourceMappingURL=todolist.input.js.map

@@ -68,3 +68,7 @@
   /* font-family: "Gabarito", cursive; */
   font-family: "Karla", sans-serif !important;
 }
+
+.remove-radix-close-icon > button:has(svg) {
+  @apply hidden;
+}

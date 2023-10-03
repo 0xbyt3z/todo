@@ -1,5 +1,6 @@
 import { TodoService } from './todo.service';
-import { todoInput } from './dto/todo.input';
+import { TodoInput } from './dto/todo.input';
+import { TodoListInput } from './dto/todolist.input';
 export declare class TodoResolver {
     private readonly todoService;
     constructor(todoService: TodoService);
@@ -48,7 +49,13 @@ export declare class TodoResolver {
         created_at: Date;
     }>;
     addUser(id: string): Promise<any[]>;
-    addTodo(todoData: todoInput): Promise<{
+    addTodoList(todoListData: TodoListInput): Promise<{
+        id: string;
+        uId: string;
+        title: string;
+        created_at: Date;
+    }>;
+    addTodo(todoData: TodoInput): Promise<{
         id: string;
         lId: string;
         title: string;

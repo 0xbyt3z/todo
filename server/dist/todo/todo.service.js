@@ -32,7 +32,10 @@ let TodoService = class TodoService {
                 uId: uId,
             },
             include: {
-                Todo: true,
+                Todo: { orderBy: { created_at: 'asc' } },
+            },
+            orderBy: {
+                created_at: 'desc',
             },
         });
         console.log(res);
@@ -45,6 +48,14 @@ let TodoService = class TodoService {
             },
             include: {
                 Todo: true,
+            },
+        });
+    }
+    async addTodoList(data) {
+        return await this.prisma.todoList.create({
+            data: {
+                title: data.title,
+                uId: data.uId,
             },
         });
     }

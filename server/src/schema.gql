@@ -8,7 +8,8 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
-  addTodo(todoData: todoInput!): Todo!
+  addTodo(todoData: TodoInput!): Todo!
+  addTodoList(todoListData: TodoListInput!): Todo!
   addUser(id: String!): User!
 }
 
@@ -30,10 +31,22 @@ type Todo {
   title: String!
 }
 
+input TodoInput {
+  completed: Boolean!
+  deadline: String!
+  lId: String!
+  title: String!
+}
+
 type TodoList {
   Todo: [Todo!]!
   created_at: DateTime
   id: ID!
+  title: String!
+  uId: String!
+}
+
+input TodoListInput {
   title: String!
   uId: String!
 }
@@ -43,11 +56,4 @@ type User {
   created_at: DateTime
   id: ID!
   name: String!
-}
-
-input todoInput {
-  completed: Boolean!
-  deadline: String!
-  lId: String!
-  title: String!
 }

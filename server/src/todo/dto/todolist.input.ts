@@ -1,15 +1,9 @@
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class TodoInput {
+export class TodoListInput {
   @Field()
-  lId: string;
-
-  @Field()
-  deadline: string;
-
-  @Field()
-  completed: boolean;
+  uId: string;
 
   @Field()
   title: string;

@@ -19,7 +19,6 @@ function makeClient() {
             httpLink,
           ])
         : httpLink,
-    defaultOptions: { query: { fetchPolicy: "no-cache" } },
   });
 }
 

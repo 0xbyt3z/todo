@@ -17,6 +17,7 @@ const todo_module_1 = require("./todo/todo.module");
 const prisma_service_1 = require("./prisma.service");
 const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
+const throttler_1 = require("@nestjs/throttler");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -29,6 +30,12 @@ exports.AppModule = AppModule = __decorate([
                 autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
                 sortSchema: true,
             }),
+            throttler_1.ThrottlerModule.forRoot([
+                {
+                    ttl: 3000,
+                    limit: 1,
+                },
+            ]),
             todo_module_1.TodoModule,
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
