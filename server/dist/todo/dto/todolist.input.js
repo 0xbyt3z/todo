@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TodoListInput = void 0;
+exports.TodoListPaginationInput = exports.TodoListInput = void 0;
 const graphql_1 = require("@nestjs/graphql");
 let TodoListInput = class TodoListInput {
 };
@@ -25,4 +25,22 @@ __decorate([
 exports.TodoListInput = TodoListInput = __decorate([
     (0, graphql_1.InputType)()
 ], TodoListInput);
+let TodoListPaginationInput = class TodoListPaginationInput {
+};
+exports.TodoListPaginationInput = TodoListPaginationInput;
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], TodoListPaginationInput.prototype, "email", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", Number)
+], TodoListPaginationInput.prototype, "first", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", Number)
+], TodoListPaginationInput.prototype, "skip", void 0);
+exports.TodoListPaginationInput = TodoListPaginationInput = __decorate([
+    (0, graphql_1.InputType)()
+], TodoListPaginationInput);
 //# sourceMappingURL=todolist.input.js.map

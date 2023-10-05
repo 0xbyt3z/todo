@@ -3,7 +3,7 @@ import { Category, Todo, TodoList, User } from './models/todo.model';
 import { TodoService } from './todo.service';
 import { AddUserInput, GetUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
-import { TodoListInput } from './dto/todolist.input';
+import { TodoListInput, TodoListPaginationInput } from './dto/todolist.input';
 import { AddCategoryInput } from './dto/cat.input';
 
 @Resolver()
@@ -23,6 +23,13 @@ export class TodoResolver {
   @Query((returns) => [TodoList])
   async getTodoLists(@Args('email') email: string) {
     return this.todoService.getTodoLists(email);
+  }
+
+  @Query((returns) => [TodoList])
+  async getTodoListsWithPagiantion(
+    @Args('args') args: TodoListPaginationInput,
+  ) {
+    return this.todoService.getTodoListsWithPagination(args);
   }
 
   @Query((returns) => TodoList)

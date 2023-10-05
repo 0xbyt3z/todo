@@ -2,10 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { TodoSchema } from "@/lib/schema";
-import { cn } from "@/lib/utils";
+import { cn, GraphQLStateHandler } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { object, z } from "zod";
+import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "src/components/ui/dialog";
@@ -15,25 +15,16 @@ import { useRouter } from "next/navigation";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 
-export default function ToDoContainer({ d }: { d: z.infer<typeof TodoSchema> }) {
+export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof TodoSchema>; invokeFetch: any }) {
   const [isCollaped, setIsCollapsed] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [completedTaskCount, setCompletedTaskCount] = useState(0);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [showModal, setShowModal] = useState(false);
-  const router = useRouter();
   const { data: session, status } = useSession();
 
   const { data: categories, refetch: refetchCategories } = useQuery(queries.GetUserCategories);
-  const [addTodo, { data, error, loading }] = useMutation(mutations.AddTodo, {
-    onError(error, clientOptions) {
-      toast.remove();
-      toast.error(error.message);
-    },
-    onCompleted(data, clientOptions) {
-      toast.remove();
-      toast.error("Done !");
-    },
-  });
+  const [addTodo, { data, error, loading }] = useMutation(mutations.AddTodo, { onError: GraphQLStateHandler.customOnError });
 
   const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,7 +43,6 @@ export default function ToDoContainer({ d }: { d: z.infer<typeof TodoSchema> }) 
     });
     if (!validate.success) {
       toast.error("Please Enter valid data !", { id: t });
-
       return;
     }
 
@@ -65,7 +55,7 @@ export default function ToDoContainer({ d }: { d: z.infer<typeof TodoSchema> }) 
         if (res.data) {
           setShowModal(false);
           toast.success("Done !", { id: t });
-          router.refresh();
+          invokeFetch();
         }
       })
       .catch((err) => toast.error("Something went wrong !", { id: t }));
@@ -79,20 +69,25 @@ export default function ToDoContainer({ d }: { d: z.infer<typeof TodoSchema> }) 
     }
   }, [status]);
 
+  useEffect(() => {
+    setCompletedTaskCount(Object.values(d.Todo).reduce((a, item) => a + (item.completed === true ? 1 : 0), 0));
+  }, [d]);
+
   return (
     <>
-      <div key={d.id} className={cn("w-full p-2 h-8 border-0 border-b-[1px] flex flex-col justify-center", `${isCollaped ? "h-auto" : ""}`)}>
+      <div key={d.id} className={cn("w-full p-2 h-8 border-0 border-b-[0px] flex flex-col justify-center", `${isCollaped ? "h-auto" : ""}`)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <span className="font-medium">{d.title}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="text-sm text-gray-600">
+              {completedTaskCount}/{d.Todo.length} Tasks
+            </span>
             {/* add todo dialog */}
-
             <svg onClick={() => setShowModal(true)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 ml-3 hover:bg-gray-100 rounded-md">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
             </svg>
-          </div>
-          <div className="flex items-center">
-            <span className="text-sm text-gray-600">{d.Todo.length} Tasks</span>
             <svg
               onClick={() => setIsCollapsed(!isCollaped)}
               xmlns="http://www.w3.org/2000/svg"
@@ -112,25 +107,12 @@ export default function ToDoContainer({ d }: { d: z.infer<typeof TodoSchema> }) 
             return (
               <>
                 <div className="flex justify-between">
-                  <div>
-                    <span>{index + 1}. </span>
+                  <div className="flex items-center">
+                    <Checkbox defaultChecked={i.completed} className="w-5 h-5 mr-2" />
                     <span>{i.title}</span>
                   </div>
 
-                  <div>
-                    {/* <span className={`${i.completed ? "text-purple-500" : "text-orange-500"}`}>
-                      {i.completed ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      )}
-                    </span> */}
-                    <Checkbox defaultChecked={i.completed} />
-                  </div>
+                  <div></div>
                 </div>
               </>
             );
@@ -222,7 +204,6 @@ const mutations = {
         title
         completed
         deadline
-        test
       }
     }
   `,

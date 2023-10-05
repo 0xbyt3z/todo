@@ -33,6 +33,9 @@ let TodoResolver = class TodoResolver {
     async getTodoLists(email) {
         return this.todoService.getTodoLists(email);
     }
+    async getTodoListsWithPagiantion(args) {
+        return this.todoService.getTodoListsWithPagination(args);
+    }
     async getTodoList(id) {
         return this.todoService.getTodoList(id);
     }
@@ -73,6 +76,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getTodoLists", null);
+__decorate([
+    (0, graphql_1.Query)((returns) => [todo_model_1.TodoList]),
+    __param(0, (0, graphql_1.Args)('args')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [todolist_input_1.TodoListPaginationInput]),
+    __metadata("design:returntype", Promise)
+], TodoResolver.prototype, "getTodoListsWithPagiantion", null);
 __decorate([
     (0, graphql_1.Query)((returns) => todo_model_1.TodoList),
     __param(0, (0, graphql_1.Args)('id')),

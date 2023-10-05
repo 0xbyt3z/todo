@@ -39,6 +39,21 @@ let TodoService = class TodoService {
             },
         });
     }
+    async getTodoListsWithPagination(args) {
+        return await this.prisma.todoList.findMany({
+            where: {
+                user: { email: args.email },
+            },
+            include: {
+                Todo: { orderBy: { created_at: 'asc' } },
+            },
+            take: args.first,
+            skip: args.skip,
+            orderBy: {
+                created_at: 'desc',
+            },
+        });
+    }
     async getTodoList(id) {
         return await this.prisma.todoList.findUnique({
             where: {

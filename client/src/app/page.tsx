@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "src/components/ui/button";
-import { cn } from "src/lib/utils";
+import { GraphQLStateHandler, cn } from "src/lib/utils";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "src/components/ui/dialog";
 import { Input } from "src/components/ui/input";
 import { useSession } from "next-auth/react";
@@ -11,19 +11,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { TodoListSchema, TodoSchema } from "@/lib/schema";
 import ToDoContainer from "../components/custom/todo";
 import toast from "react-hot-toast";
+import Loading from "./loading";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const [currentPageNo, setCurrentPageNo] = useState<number>(0);
+  const [currentFetchSize, setCurrentFetchSize] = useState<number>(5);
   const [time, setTime] = useState<string[]>([]);
   const [date, setDate] = useState<string[]>([]);
   const [colorSelect, setColorSelect] = useState<string>();
   const [listdate, setListDate] = React.useState<Date | undefined>(new Date());
   const [showListModal, setShowListModal] = useState(false);
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-  const { data: session, status } = useSession();
-  const { loading, error, data, refetch } = useQuery(queries.QUERY, { fetchPolicy: "network-only" });
+  const { loading, error, data, refetch } = useQuery(queries.GetListsWithPagiantion, { fetchPolicy: "network-only", variables: { args: { email: "", first: 0, skip: 0 } }, onError: GraphQLStateHandler.customOnError });
 
   const [addCategory, { data: categoryData, error: categoryError }] = useMutation(mutations.CategoryQuery);
 
+  const handleRefetchFromChild = () => {
+    //this function will be called from children
+    refetch({ args: { email: session?.user.email, first: currentFetchSize, skip: currentPageNo * currentFetchSize } });
+  };
   const handleAddCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let t = toast.loading("Please Wait");
@@ -71,8 +78,6 @@ export default function Home() {
         toast.error("Something went wrong !", { id: t });
       });
 
-    console.log(res);
-
     if (res) {
       toast.success("Done !", { id: t });
       setShowListModal(false);
@@ -88,14 +93,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
     if (status == "authenticated") {
-      refetch({ email: session.user.email });
+      refetch({ args: { email: session.user.email, first: currentFetchSize, skip: currentPageNo * currentFetchSize } });
     }
-  }, [status]);
+  }, [status, currentPageNo]);
 
   return (
     <>
@@ -104,7 +105,7 @@ export default function Home() {
       <span className='text-5xl font-extrabold'>{time[0]}</span>
     </div> */}
         <div className="w-full flex justify-end space-x-2">
-          <Button onClick={() => setShowCategoriesModal(true)} variant={"outline"} className="flex text-pink-600  hover:text-pink-600">
+          <Button disabled={session == undefined} onClick={() => setShowCategoriesModal(true)} variant={"outline"} className="flex ">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-2">
               <path
                 fillRule="evenodd"
@@ -114,18 +115,57 @@ export default function Home() {
             </svg>
             New Category
           </Button>
-          <Button onClick={() => setShowListModal(true)} variant={"outline"} className="flex bg-green-500 hover:bg-green-600 hover:text-white text-white">
+          <Button disabled={session == undefined} onClick={() => setShowListModal(true)} variant={"default"} className="flex">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-2">
               <path d="M4.75 3A1.75 1.75 0 003 4.75v2.752l.104-.002h13.792c.035 0 .07 0 .104.002V6.75A1.75 1.75 0 0015.25 5h-3.836a.25.25 0 01-.177-.073L9.823 3.513A1.75 1.75 0 008.586 3H4.75zM3.104 9a1.75 1.75 0 00-1.673 2.265l1.385 4.5A1.75 1.75 0 004.488 17h11.023a1.75 1.75 0 001.673-1.235l1.384-4.5A1.75 1.75 0 0016.896 9H3.104z" />
             </svg>
             New List
           </Button>
         </div>
-
         <h1 className="text-3xl font-bold">Task Lists</h1>
-
         {/* list */}
-        <div className="space-y-4 mt-10">{data && data.getTodoLists.map((i: any) => <ToDoContainer key={i.id} d={i} />)}</div>
+        <div className="space-y-4 mt-10">
+          {loading ? (
+            <Loading />
+          ) : data.getTodoListsWithPagiantion.length ? (
+            data?.getTodoListsWithPagiantion.map((i: any) => <ToDoContainer invokeFetch={handleRefetchFromChild} key={i.id} d={i} />)
+          ) : (
+            <p className="animate-pulse">No tasks yet</p>
+          )}
+        </div>
+        {/* pagination button group */}
+        <div className="flex mt-10 space-x-1">
+          <Button
+            onClick={() => {
+              if (currentPageNo > 0) setCurrentPageNo((state) => state - 1);
+            }}
+            disabled={session == undefined}
+            variant={"outline"}
+            size={"icon"}
+            className="w-8 h-8"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+              <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+            </svg>
+          </Button>
+          <Button disabled={session == undefined} variant={"outline"} size={"icon"} className="w-8 h-8">
+            {currentPageNo + 1}
+          </Button>
+          <Button
+            onClick={() => {
+              //this prevent incrementing the page number when reach the end of results
+              data.getTodoListsWithPagiantion.length == currentFetchSize ? setCurrentPageNo((state) => state + 1) : toast("That's All");
+            }}
+            disabled={session == undefined}
+            variant={"outline"}
+            size={"icon"}
+            className="w-8 h-8"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+              <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+            </svg>
+          </Button>
+        </div>
       </div>
 
       {/* list modal */}
@@ -234,6 +274,20 @@ const queries = {
   QUERY: gql`
     query getAllLists($email: String!) {
       getTodoLists(email: $email) {
+        id
+        created_at
+        title
+        Todo {
+          title
+          completed
+          category
+        }
+      }
+    }
+  `,
+  GetListsWithPagiantion: gql`
+    query ($args: TodoListPaginationInput!) {
+      getTodoListsWithPagiantion(args: $args) {
         id
         created_at
         title

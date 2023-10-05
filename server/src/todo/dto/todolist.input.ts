@@ -8,3 +8,15 @@ export class TodoListInput {
   @Field()
   title: string;
 }
+
+@InputType()
+export class TodoListPaginationInput {
+  @Field()
+  email: string;
+
+  @Field()
+  first: number;
+
+  @Field()
+  skip: number;
+}

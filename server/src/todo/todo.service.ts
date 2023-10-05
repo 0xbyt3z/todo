@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { AddUserInput, GetUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
-import { TodoListInput } from './dto/todolist.input';
+import { TodoListInput, TodoListPaginationInput } from './dto/todolist.input';
 import { AddCategoryInput } from './dto/cat.input';
 
 @Injectable()
@@ -28,6 +28,22 @@ export class TodoService {
       include: {
         Todo: { orderBy: { created_at: 'asc' } },
       },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+  }
+
+  async getTodoListsWithPagination(args: TodoListPaginationInput) {
+    return await this.prisma.todoList.findMany({
+      where: {
+        user: { email: args.email },
+      },
+      include: {
+        Todo: { orderBy: { created_at: 'asc' } },
+      },
+      take: args.first,
+      skip: args.skip,
       orderBy: {
         created_at: 'desc',
       },

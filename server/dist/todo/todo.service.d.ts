@@ -1,7 +1,7 @@
 import { PrismaService } from 'src/prisma.service';
 import { AddUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
-import { TodoListInput } from './dto/todolist.input';
+import { TodoListInput, TodoListPaginationInput } from './dto/todolist.input';
 import { AddCategoryInput } from './dto/cat.input';
 export declare class TodoService {
     private prisma;
@@ -17,6 +17,23 @@ export declare class TodoService {
         created_at: Date;
     }>;
     getTodoLists(email: string): Promise<({
+        Todo: {
+            id: string;
+            lId: string;
+            title: string;
+            remarks: string;
+            completed: boolean;
+            deadline: Date;
+            category: string;
+            created_at: Date;
+        }[];
+    } & {
+        id: string;
+        uId: string;
+        title: string;
+        created_at: Date;
+    })[]>;
+    getTodoListsWithPagination(args: TodoListPaginationInput): Promise<({
         Todo: {
             id: string;
             lId: string;
