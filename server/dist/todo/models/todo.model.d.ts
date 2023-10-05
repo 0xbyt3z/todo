@@ -1,6 +1,6 @@
 export declare class User {
     id: string;
-    name: string;
+    email: string;
     created_at: Date;
     TodoList: TodoList[];
 }
@@ -20,4 +20,10 @@ export declare class Todo {
     category: string;
     deadline: Date;
     created_at: Date;
+}
+export declare class Category {
+    id: string;
+    email: string;
+    name: string;
+    color: string;
 }

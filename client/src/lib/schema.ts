@@ -24,6 +24,7 @@ export const TodoSchema = z.object({
     z.object({
       title: z.string().min(5),
       completed: z.boolean(),
+      category: z.string(),
     })
   ),
 });

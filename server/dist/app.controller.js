@@ -26,13 +26,14 @@ let AppController = class AppController {
 };
 exports.AppController = AppController;
 __decorate([
+    (0, throttler_1.SkipThrottle)(),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", String)
 ], AppController.prototype, "getHello", null);
 __decorate([
-    (0, common_1.Get)('rate'),
+    (0, common_1.Get)('rated'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", String)

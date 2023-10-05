@@ -1,4 +1,4 @@
 export declare class TodoListInput {
-    uId: string;
+    email: string;
     title: string;
 }

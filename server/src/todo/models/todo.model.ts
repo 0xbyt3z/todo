@@ -6,7 +6,7 @@ export class User {
   id: string;
 
   @Field()
-  name: string;
+  email: string;
 
   @Field({ nullable: true })
   created_at: Date;
@@ -58,4 +58,19 @@ export class Todo {
 
   @Field({ nullable: true })
   created_at: Date;
+}
+
+@ObjectType()
+export class Category {
+  @Field()
+  id: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  name: string;
+
+  @Field()
+  color: string;
 }

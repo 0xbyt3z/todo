@@ -1,20 +1,22 @@
 import { TodoService } from './todo.service';
+import { AddUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
 import { TodoListInput } from './dto/todolist.input';
+import { AddCategoryInput } from './dto/cat.input';
 export declare class TodoResolver {
     private readonly todoService;
     constructor(todoService: TodoService);
     allUsers(): Promise<{
         id: string;
-        name: string;
+        email: string;
         created_at: Date;
     }[]>;
-    getUser(id: string): Promise<{
+    getUser(email: string): Promise<{
         id: string;
-        name: string;
+        email: string;
         created_at: Date;
     }>;
-    getTodoLists(uId: string): Promise<({
+    getTodoLists(email: string): Promise<({
         Todo: {
             id: string;
             lId: string;
@@ -48,7 +50,17 @@ export declare class TodoResolver {
         title: string;
         created_at: Date;
     }>;
-    addUser(id: string): Promise<any[]>;
+    getUserCategories(email: string): Promise<{
+        id: string;
+        email: string;
+        name: string;
+        color: string;
+    }[]>;
+    addUser(userData: AddUserInput): Promise<{
+        id: string;
+        email: string;
+        created_at: Date;
+    }>;
     addTodoList(todoListData: TodoListInput): Promise<{
         id: string;
         uId: string;
@@ -64,5 +76,11 @@ export declare class TodoResolver {
         deadline: Date;
         category: string;
         created_at: Date;
+    }>;
+    addCategory(catData: AddCategoryInput): Promise<{
+        id: string;
+        email: string;
+        name: string;
+        color: string;
     }>;
 }

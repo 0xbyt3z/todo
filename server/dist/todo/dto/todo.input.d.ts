@@ -3,4 +3,5 @@ export declare class TodoInput {
     deadline: string;
     completed: boolean;
     title: string;
+    category: string;
 }

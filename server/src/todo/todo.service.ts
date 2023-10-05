@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { GetUserInput } from './dto/user.input';
+import { AddUserInput, GetUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
 import { TodoListInput } from './dto/todolist.input';
+import { AddCategoryInput } from './dto/cat.input';
 
 @Injectable()
 export class TodoService {
@@ -11,18 +12,18 @@ export class TodoService {
     return await this.prisma.user.findMany();
   }
 
-  async getUser(id: string) {
+  async getUser(email: string) {
     return await this.prisma.user.findUnique({
       where: {
-        id: id,
+        email,
       },
     });
   }
 
-  async getTodoLists(uId: string) {
-    const res = await this.prisma.todoList.findMany({
+  async getTodoLists(email: string) {
+    return await this.prisma.todoList.findMany({
       where: {
-        uId: uId,
+        user: { email },
       },
       include: {
         Todo: { orderBy: { created_at: 'asc' } },
@@ -31,10 +32,6 @@ export class TodoService {
         created_at: 'desc',
       },
     });
-
-    console.log(res);
-
-    return res;
   }
 
   async getTodoList(id: string) {
@@ -48,11 +45,27 @@ export class TodoService {
     });
   }
 
+  async getUserCategories(email: string) {
+    return await this.prisma.usercategories.findMany({
+      where: {
+        email,
+      },
+    });
+  }
+
+  async addUser(data: AddUserInput) {
+    return await this.prisma.user.create({
+      data: {
+        email: data.email,
+      },
+    });
+  }
+
   async addTodoList(data: TodoListInput) {
     return await this.prisma.todoList.create({
       data: {
         title: data.title,
-        uId: data.uId,
+        user: { connect: { email: data.email } },
       },
     });
   }
@@ -64,6 +77,17 @@ export class TodoService {
         completed: data.completed,
         title: data.title,
         lId: data.lId,
+        category: data.category,
+      },
+    });
+  }
+
+  async addCategory(data: AddCategoryInput) {
+    return await this.prisma.usercategories.create({
+      data: {
+        email: data.email,
+        name: data.name,
+        color: data.color,
       },
     });
   }

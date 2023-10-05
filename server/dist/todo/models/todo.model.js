@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Todo = exports.TodoList = exports.User = void 0;
+exports.Category = exports.Todo = exports.TodoList = exports.User = void 0;
 const graphql_1 = require("@nestjs/graphql");
 let User = class User {
 };
@@ -21,7 +21,7 @@ __decorate([
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], User.prototype, "name", void 0);
+], User.prototype, "email", void 0);
 __decorate([
     (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", Date)
@@ -97,4 +97,26 @@ __decorate([
 exports.Todo = Todo = __decorate([
     (0, graphql_1.ObjectType)()
 ], Todo);
+let Category = class Category {
+};
+exports.Category = Category;
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], Category.prototype, "id", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], Category.prototype, "email", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], Category.prototype, "name", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], Category.prototype, "color", void 0);
+exports.Category = Category = __decorate([
+    (0, graphql_1.ObjectType)()
+], Category);
 //# sourceMappingURL=todo.model.js.map

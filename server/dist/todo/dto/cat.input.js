@@ -9,28 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TodoInput = void 0;
+exports.AddCategoryInput = void 0;
 const graphql_1 = require("@nestjs/graphql");
-let TodoInput = class TodoInput {
+let AddCategoryInput = class AddCategoryInput {
 };
-exports.TodoInput = TodoInput;
+exports.AddCategoryInput = AddCategoryInput;
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], TodoInput.prototype, "lId", void 0);
+], AddCategoryInput.prototype, "email", void 0);
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], TodoInput.prototype, "deadline", void 0);
-__decorate([
-    (0, graphql_1.Field)(),
-    __metadata("design:type", Boolean)
-], TodoInput.prototype, "completed", void 0);
+], AddCategoryInput.prototype, "name", void 0);
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], TodoInput.prototype, "title", void 0);
-exports.TodoInput = TodoInput = __decorate([
+], AddCategoryInput.prototype, "color", void 0);
+exports.AddCategoryInput = AddCategoryInput = __decorate([
     (0, graphql_1.InputType)()
-], TodoInput);
-//# sourceMappingURL=todo.input%20copy.js.map
+], AddCategoryInput);
+//# sourceMappingURL=cat.input.js.map

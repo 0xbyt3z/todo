@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id             String           @id @default(cuid())
-  name           String
+  email          String           @unique
   created_at     DateTime         @default(now())
   TodoList       TodoList[]
   Usercategories Usercategories[]
@@ -22,7 +22,7 @@ model TodoList {
   id         String   @id @default(cuid())
   uId        String
   title      String
-  user       User     @relation(fields: [uId], references: [id])
+  user       User     @relation(fields: [uId], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
   Todo       Todo[]
 }
@@ -30,7 +30,7 @@ model TodoList {
 model Todo {
   id         String   @id @default(cuid())
   lId        String
-  list       TodoList @relation(fields: [lId], references: [id])
+  list       TodoList @relation(fields: [lId], references: [id], onDelete: Cascade)
   title      String
   remarks    String?
   completed  Boolean  @default(false)
@@ -41,8 +41,8 @@ model Todo {
 
 model Usercategories {
   id    String @id @default(cuid())
-  uId   String
-  user  User   @relation(fields: [uId], references: [id])
+  email String
+  user  User   @relation(fields: [email], references: [email], onDelete: Cascade)
   name  String
   color String
 }

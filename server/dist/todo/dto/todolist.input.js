@@ -17,7 +17,7 @@ exports.TodoListInput = TodoListInput;
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], TodoListInput.prototype, "uId", void 0);
+], TodoListInput.prototype, "email", void 0);
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)

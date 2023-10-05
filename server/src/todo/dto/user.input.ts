@@ -5,3 +5,9 @@ export class GetUserInput {
   @Field()
   id: string;
 }
+
+@InputType()
+export class AddUserInput {
+  @Field()
+  email: string;
+}

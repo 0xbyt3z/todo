@@ -1,9 +1,10 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Todo, TodoList, User } from './models/todo.model';
+import { Category, Todo, TodoList, User } from './models/todo.model';
 import { TodoService } from './todo.service';
-import { GetUserInput } from './dto/user.input';
+import { AddUserInput, GetUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
 import { TodoListInput } from './dto/todolist.input';
+import { AddCategoryInput } from './dto/cat.input';
 
 @Resolver()
 export class TodoResolver {
@@ -15,13 +16,13 @@ export class TodoResolver {
   }
 
   @Query((returns) => User)
-  async getUser(@Args('id') id: string) {
-    return this.todoService.getUser(id);
+  async getUser(@Args('email') email: string) {
+    return this.todoService.getUser(email);
   }
 
   @Query((returns) => [TodoList])
-  async getTodoLists(@Args('uId') uId: string) {
-    return this.todoService.getTodoLists(uId);
+  async getTodoLists(@Args('email') email: string) {
+    return this.todoService.getTodoLists(email);
   }
 
   @Query((returns) => TodoList)
@@ -29,9 +30,14 @@ export class TodoResolver {
     return this.todoService.getTodoList(id);
   }
 
+  @Query((returns) => [Category])
+  async getUserCategories(@Args('email') email: string) {
+    return this.todoService.getUserCategories(email);
+  }
+
   @Mutation((returns) => User)
-  async addUser(@Args('id') id: string) {
-    return [];
+  async addUser(@Args('userData') userData: AddUserInput) {
+    return this.todoService.addUser(userData);
   }
 
   @Mutation((returns) => Todo)
@@ -42,5 +48,10 @@ export class TodoResolver {
   @Mutation((returns) => Todo)
   async addTodo(@Args('todoData') todoData: TodoInput) {
     return this.todoService.addTodo(todoData);
+  }
+
+  @Mutation((returns) => Category)
+  async addCategory(@Args('catData') catData: AddCategoryInput) {
+    return this.todoService.addCategory(catData);
   }
 }

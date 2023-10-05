@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { ApolloWrapper } from "src/lib/apollo-wrapper";
 import { Toaster } from "react-hot-toast";
+import { SessionProvider } from "next-auth/react";
+import { Wrapper } from "@/components/custom/wrapper";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,16 +24,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-
-const Wrapper = ({ children }: { children: ReactNode }) => {
-  return (
-    <>
-      <div className="w-screen h-screen flex justify-center overflow-hidden">
-        <div className="w-1/4 h-full -ml-56">
-          <NavBar />
-          {children}
-        </div>
-      </div>
-    </>
-  );
-};

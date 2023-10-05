@@ -13,4 +13,7 @@ export class TodoInput {
 
   @Field()
   title: string;
+
+  @Field()
+  category: string;
 }

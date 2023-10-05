@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetUserInput = void 0;
+exports.AddUserInput = exports.GetUserInput = void 0;
 const graphql_1 = require("@nestjs/graphql");
 let GetUserInput = class GetUserInput {
 };
@@ -21,4 +21,14 @@ __decorate([
 exports.GetUserInput = GetUserInput = __decorate([
     (0, graphql_1.InputType)()
 ], GetUserInput);
+let AddUserInput = class AddUserInput {
+};
+exports.AddUserInput = AddUserInput;
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], AddUserInput.prototype, "email", void 0);
+exports.AddUserInput = AddUserInput = __decorate([
+    (0, graphql_1.InputType)()
+], AddUserInput);
 //# sourceMappingURL=user.input.js.map

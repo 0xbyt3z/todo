@@ -1,0 +1,5 @@
+	CREATE USER app PASSWORD 'app_password';
+	CREATE DATABASE app;
+	GRANT ALL PRIVILEGES ON DATABASE app TO app;
+	\c app
+	GRANT ALL ON SCHEMA public TO app;

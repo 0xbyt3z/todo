@@ -30,6 +30,10 @@ __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
 ], TodoInput.prototype, "title", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], TodoInput.prototype, "category", void 0);
 exports.TodoInput = TodoInput = __decorate([
     (0, graphql_1.InputType)()
 ], TodoInput);

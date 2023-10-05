@@ -2,22 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddCategoryInput {
+  color: String!
+  email: String!
+  name: String!
+}
+
+input AddUserInput {
+  email: String!
+}
+
+type Category {
+  color: String!
+  email: String!
+  id: String!
+  name: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
 type Mutation {
+  addCategory(catData: AddCategoryInput!): Category!
   addTodo(todoData: TodoInput!): Todo!
   addTodoList(todoListData: TodoListInput!): Todo!
-  addUser(id: String!): User!
+  addUser(userData: AddUserInput!): User!
 }
 
 type Query {
   allUsers: [User!]!
   getTodoList(id: String!): TodoList!
-  getTodoLists(uId: String!): [TodoList!]!
-  getUser(id: String!): User!
+  getTodoLists(email: String!): [TodoList!]!
+  getUser(email: String!): User!
+  getUserCategories(email: String!): [Category!]!
 }
 
 type Todo {
@@ -32,6 +51,7 @@ type Todo {
 }
 
 input TodoInput {
+  category: String!
   completed: Boolean!
   deadline: String!
   lId: String!
@@ -47,13 +67,13 @@ type TodoList {
 }
 
 input TodoListInput {
+  email: String!
   title: String!
-  uId: String!
 }
 
 type User {
   TodoList: [TodoList!]!
   created_at: DateTime
+  email: String!
   id: ID!
-  name: String!
 }

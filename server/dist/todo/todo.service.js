@@ -19,17 +19,17 @@ let TodoService = class TodoService {
     async allUsers() {
         return await this.prisma.user.findMany();
     }
-    async getUser(id) {
+    async getUser(email) {
         return await this.prisma.user.findUnique({
             where: {
-                id: id,
+                email,
             },
         });
     }
-    async getTodoLists(uId) {
-        const res = await this.prisma.todoList.findMany({
+    async getTodoLists(email) {
+        return await this.prisma.todoList.findMany({
             where: {
-                uId: uId,
+                user: { email },
             },
             include: {
                 Todo: { orderBy: { created_at: 'asc' } },
@@ -38,8 +38,6 @@ let TodoService = class TodoService {
                 created_at: 'desc',
             },
         });
-        console.log(res);
-        return res;
     }
     async getTodoList(id) {
         return await this.prisma.todoList.findUnique({
@@ -51,11 +49,25 @@ let TodoService = class TodoService {
             },
         });
     }
+    async getUserCategories(email) {
+        return await this.prisma.usercategories.findMany({
+            where: {
+                email,
+            },
+        });
+    }
+    async addUser(data) {
+        return await this.prisma.user.create({
+            data: {
+                email: data.email,
+            },
+        });
+    }
     async addTodoList(data) {
         return await this.prisma.todoList.create({
             data: {
                 title: data.title,
-                uId: data.uId,
+                user: { connect: { email: data.email } },
             },
         });
     }
@@ -66,6 +78,16 @@ let TodoService = class TodoService {
                 completed: data.completed,
                 title: data.title,
                 lId: data.lId,
+                category: data.category,
+            },
+        });
+    }
+    async addCategory(data) {
+        return await this.prisma.usercategories.create({
+            data: {
+                email: data.email,
+                name: data.name,
+                color: data.color,
             },
         });
     }
