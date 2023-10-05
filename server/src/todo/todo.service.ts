@@ -94,6 +94,7 @@ export class TodoService {
         title: data.title,
         lId: data.lId,
         category: data.category,
+        remarks: data.remarks,
       },
     });
   }
@@ -105,6 +106,23 @@ export class TodoService {
         name: data.name,
         color: data.color,
       },
+    });
+  }
+
+  async updateTodo(id: string) {
+    const ischecked = (await this.prisma.todo.findFirst({ where: { id } }))
+      .completed;
+    return await this.prisma.todo.update({
+      where: { id },
+      data: {
+        completed: !ischecked,
+      },
+    });
+  }
+
+  async deleteTodo(id: string) {
+    return await this.prisma.todo.delete({
+      where: { id },
     });
   }
 }

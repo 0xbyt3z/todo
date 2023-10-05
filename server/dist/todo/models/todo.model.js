@@ -75,7 +75,7 @@ __decorate([
     __metadata("design:type", String)
 ], Todo.prototype, "title", void 0);
 __decorate([
-    (0, graphql_1.Field)(),
+    (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", String)
 ], Todo.prototype, "remarks", void 0);
 __decorate([

@@ -100,4 +100,24 @@ export declare class TodoService {
         name: string;
         color: string;
     }>;
+    updateTodo(id: string): Promise<{
+        id: string;
+        lId: string;
+        title: string;
+        remarks: string;
+        completed: boolean;
+        deadline: Date;
+        category: string;
+        created_at: Date;
+    }>;
+    deleteTodo(id: string): Promise<{
+        id: string;
+        lId: string;
+        title: string;
+        remarks: string;
+        completed: boolean;
+        deadline: Date;
+        category: string;
+        created_at: Date;
+    }>;
 }

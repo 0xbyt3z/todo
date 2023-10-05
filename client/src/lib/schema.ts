@@ -8,8 +8,11 @@ export const TodoListSchema = z.object({
       title: z.string(),
       Todo: z.array(
         z.object({
-          title: z.string(),
+          id: z.string(),
+          title: z.string().min(4),
           completed: z.boolean(),
+          remarks: z.string().min(4),
+          category: z.string().min(3),
         })
       ),
     })
@@ -22,9 +25,11 @@ export const TodoSchema = z.object({
   title: z.string(),
   Todo: z.array(
     z.object({
-      title: z.string().min(5),
+      id: z.string(),
+      title: z.string().min(4),
       completed: z.boolean(),
-      category: z.string(),
+      remarks: z.string().min(4),
+      category: z.string().min(3),
     })
   ),
 });

@@ -8,10 +8,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "src/components/ui/input";
 import { useSession } from "next-auth/react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TodoListSchema, TodoSchema } from "@/lib/schema";
+import { TodoSchema } from "@/lib/schema";
 import ToDoContainer from "../components/custom/todo";
 import toast from "react-hot-toast";
 import Loading from "./loading";
+import { z } from "zod";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -20,12 +21,27 @@ export default function Home() {
   const [time, setTime] = useState<string[]>([]);
   const [date, setDate] = useState<string[]>([]);
   const [colorSelect, setColorSelect] = useState<string>();
-  const [listdate, setListDate] = React.useState<Date | undefined>(new Date());
+  // const [listdate, setListDate] = React.useState<Date | undefined>(new Date());
   const [showListModal, setShowListModal] = useState(false);
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-  const { loading, error, data, refetch } = useQuery(queries.GetListsWithPagiantion, { fetchPolicy: "network-only", variables: { args: { email: "", first: 0, skip: 0 } }, onError: GraphQLStateHandler.customOnError });
-
-  const [addCategory, { data: categoryData, error: categoryError }] = useMutation(mutations.CategoryQuery);
+  const { loading, data, refetch } = useQuery(queries.GetListsWithPagiantion, {
+    fetchPolicy: "network-only",
+    variables: { args: { email: "", first: 0, skip: 0 } },
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: GraphQLStateHandler.customOnCompleted,
+  });
+  const [addCategory] = useMutation(mutations.CategoryQuery, {
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: (data) => {
+      GraphQLStateHandler.customOnCompleted(data), handleRefetchFromChild();
+    },
+  });
+  const [addTodoList] = useMutation(mutations.AddTodoList, {
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: (data) => {
+      GraphQLStateHandler.customOnCompleted(data), handleRefetchFromChild();
+    },
+  });
 
   const handleRefetchFromChild = () => {
     //this function will be called from children
@@ -36,7 +52,16 @@ export default function Home() {
     let t = toast.loading("Please Wait");
     let name: string = (e.currentTarget[0] as HTMLInputElement).value;
 
-    addCategory({ variables: { data: { color: colorSelect, email: session?.user.email, name: name } } }).catch((err) => {
+    const categoryschema = z.object({ color: z.string().min(3), name: z.string().min(3) });
+
+    //validate
+    const validated = categoryschema.safeParse({ color: colorSelect, name });
+    if (!validated.success) {
+      toast.error("Please enter valid data", { id: t });
+      return;
+    }
+
+    addCategory({ variables: { data: { color: colorSelect, email: session?.user.email, name } } }).catch((err) => {
       toast.error("Someting went wrong !", { id: t });
       return;
     });
@@ -57,32 +82,25 @@ export default function Home() {
       return;
     }
 
-    const res = await fetch("http://localhost:3001/graphql", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({
-        query: `mutation($todoListData: TodoListInput!) {
-          addTodoList(todoListData: $todoListData) {
-            title
-            created_at
-          }
-        }`,
-        variables: {
-          todoListData: { title: title, email: session?.user.email },
-        },
-      }),
+    // const res = await fetch("http://localhost:3001/graphql", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    //   body: JSON.stringify({
+    //     query: ``,
+    //     ,
+    //   }),
+    // })
+    const res = addTodoList({
+      variables: {
+        todoListData: { title: title, email: session?.user.email },
+      },
     })
-      .then((res) => res.json())
-      .catch((err) => {
-        console.error(err);
-        toast.error("Something went wrong !", { id: t });
-      });
-
-    if (res) {
-      toast.success("Done !", { id: t });
-      setShowListModal(false);
-      location.reload();
-    }
+      .then((res) => {
+        if (res.data) {
+          setShowListModal(false);
+        }
+      })
+      .catch((err) => toast.error("Something went wrong !", { id: t }));
   };
 
   useEffect(() => {
@@ -127,7 +145,7 @@ export default function Home() {
         <div className="space-y-4 mt-10">
           {loading ? (
             <Loading />
-          ) : data.getTodoListsWithPagiantion.length ? (
+          ) : data?.getTodoListsWithPagiantion.length ? (
             data?.getTodoListsWithPagiantion.map((i: any) => <ToDoContainer invokeFetch={handleRefetchFromChild} key={i.id} d={i} />)
           ) : (
             <p className="animate-pulse">No tasks yet</p>
@@ -278,7 +296,9 @@ const queries = {
         created_at
         title
         Todo {
+          id
           title
+          remarks
           completed
           category
         }
@@ -292,7 +312,9 @@ const queries = {
         created_at
         title
         Todo {
+          id
           title
+          remarks
           completed
           category
         }
@@ -315,6 +337,14 @@ const mutations = {
         color
         id
         name
+      }
+    }
+  `,
+  AddTodoList: gql`
+    mutation ($todoListData: TodoListInput!) {
+      addTodoList(todoListData: $todoListData) {
+        title
+        created_at
       }
     }
   `,

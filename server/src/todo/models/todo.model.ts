@@ -44,7 +44,7 @@ export class Todo {
   @Field()
   title: string;
 
-  @Field()
+  @Field({ nullable: true })
   remarks: string;
 
   @Field()

@@ -15,5 +15,8 @@ export class TodoInput {
   title: string;
 
   @Field()
+  remarks: string;
+
+  @Field()
   category: string;
 }

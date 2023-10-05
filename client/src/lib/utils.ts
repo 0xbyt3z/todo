@@ -9,11 +9,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export const GraphQLStateHandler = {
   customOnError(error: ApolloError, clientOptions: any = null) {
+    console.log(error.message);
     toast.remove();
     toast.error(error.message);
   },
   customOnCompleted(data: any, clientOptions: any = null) {
     toast.remove();
-    toast.error("Done !");
+    toast.success("Done !");
   },
 };

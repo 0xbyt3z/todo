@@ -29,6 +29,8 @@ type Mutation {
   addTodo(todoData: TodoInput!): Todo!
   addTodoList(todoListData: TodoListInput!): Todo!
   addUser(userData: AddUserInput!): User!
+  deleteTodo(id: String!): Todo!
+  updateTodo(id: String!): Todo!
 }
 
 type Query {
@@ -47,7 +49,7 @@ type Todo {
   deadline: DateTime
   id: ID!
   lId: String!
-  remarks: String!
+  remarks: String
   title: String!
 }
 
@@ -56,6 +58,7 @@ input TodoInput {
   completed: Boolean!
   deadline: String!
   lId: String!
+  remarks: String!
   title: String!
 }
 

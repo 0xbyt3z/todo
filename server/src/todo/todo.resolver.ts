@@ -61,4 +61,14 @@ export class TodoResolver {
   async addCategory(@Args('catData') catData: AddCategoryInput) {
     return this.todoService.addCategory(catData);
   }
+
+  @Mutation((returns) => Todo)
+  async updateTodo(@Args('id') id: string) {
+    return this.todoService.updateTodo(id);
+  }
+
+  @Mutation((returns) => Todo)
+  async deleteTodo(@Args('id') id: string) {
+    return this.todoService.deleteTodo(id);
+  }
 }

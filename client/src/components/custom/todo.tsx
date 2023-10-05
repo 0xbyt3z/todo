@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "src/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -16,15 +18,34 @@ import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 
 export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof TodoSchema>; invokeFetch: any }) {
-  const [isCollaped, setIsCollapsed] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [completedTaskCount, setCompletedTaskCount] = useState(0);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [currentTodoDelete, setCurrentTodoDelete] = useState("");
+  const [isCollaped, setIsCollapsed] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
+  const [showTodoDeleteModal, setShowTodoDeleteModal] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const { data: session, status } = useSession();
 
   const { data: categories, refetch: refetchCategories } = useQuery(queries.GetUserCategories);
-  const [addTodo, { data, error, loading }] = useMutation(mutations.AddTodo, { onError: GraphQLStateHandler.customOnError });
+  const [addTodo] = useMutation(mutations.AddTodo, {
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: (data) => {
+      GraphQLStateHandler.customOnCompleted(data), invokeFetch();
+    },
+  });
+  const [updateTodo] = useMutation(mutations.UpdateTodo, {
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: (data) => {
+      GraphQLStateHandler.customOnCompleted(data), invokeFetch();
+    },
+  });
+  const [deleteTodo] = useMutation(mutations.DeleteTodo, {
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: (data) => {
+      GraphQLStateHandler.customOnCompleted(data), invokeFetch();
+    },
+  });
 
   const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,8 +56,11 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
     const validate = TodoSchema.pick({ Todo: true }).safeParse({
       Todo: [
         {
+          id: "",
           title,
+          remarks,
           completed: false,
+          date: "",
           category: selectedCategory,
         },
       ],
@@ -48,13 +72,12 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
 
     addTodo({
       variables: {
-        todoData: { completed: false, title: title, lId: d.id, deadline: date?.toISOString(), category: selectedCategory },
+        todoData: { completed: false, title: title, remarks: remarks, lId: d.id, deadline: date?.toISOString(), category: selectedCategory },
       },
     })
       .then((res) => {
         if (res.data) {
           setShowModal(false);
-          toast.success("Done !", { id: t });
           invokeFetch();
         }
       })
@@ -72,6 +95,10 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
   useEffect(() => {
     setCompletedTaskCount(Object.values(d.Todo).reduce((a, item) => a + (item.completed === true ? 1 : 0), 0));
   }, [d]);
+
+  useEffect(() => {
+    console.log(date?.toISOString());
+  }, [date]);
 
   return (
     <>
@@ -103,20 +130,38 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
         </div>
         {/* todo list */}
         <div className={`w-full flex flex-col mt-5 ${isCollaped ? "block" : "hidden"}`}>
-          {d.Todo.map((i, index) => {
-            return (
-              <>
-                <div className="flex justify-between">
-                  <div className="flex items-center">
-                    <Checkbox defaultChecked={i.completed} className="w-5 h-5 mr-2" />
-                    <span>{i.title}</span>
+          {d.Todo.length == 0 ? (
+            <p className="text-gray-400 text-sm">Add a task to this '+'</p>
+          ) : (
+            d.Todo.map((i, index) => {
+              return (
+                <>
+                  <div className="flex justify-between group">
+                    <div className="flex items-center">
+                      <Checkbox onClick={() => updateTodo({ variables: { id: i.id } })} defaultChecked={i.completed} className="w-5 h-5 mr-2" />
+                      {i.remarks && <div className="absolute ml-6 p-2 py-1 text-xs hidden group-hover:block border-[1px] bg-white w-fit mt-10">{i.remarks}</div>}
+                      <ContextMenu>
+                        <ContextMenuTrigger>
+                          <span>{i.title}</span>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          <ContextMenuItem
+                            onClick={() => {
+                              setShowTodoDeleteModal(true), setCurrentTodoDelete(i.id);
+                            }}
+                            className="text-red-500 font-medium"
+                          >
+                            Delete
+                          </ContextMenuItem>
+                        </ContextMenuContent>
+                      </ContextMenu>
+                    </div>
+                    <div></div>
                   </div>
-
-                  <div></div>
-                </div>
-              </>
-            );
-          })}
+                </>
+              );
+            })
+          )}
 
           <Dialog open={showModal}>
             <DialogContent className="remove-radix-close-icon">
@@ -143,7 +188,7 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
                       <label htmlFor="remarks">Category</label>
                       <Select onValueChange={setSelectedCategory}>
                         <SelectTrigger className="w-[250px] capitalize">
-                          <SelectValue defaultValue={"notset"} />
+                          <SelectValue defaultValue={"notset"} placeholder="please select" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="notset">None</SelectItem>
@@ -175,6 +220,22 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
               </DialogHeader>
             </DialogContent>
           </Dialog>
+
+          {/* alert confirmation delete todo */}
+          <AlertDialog open={showTodoDeleteModal}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>This action cannot be undone. This will permanently delete your account and remove your data from our servers.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setShowTodoDeleteModal(false)}>Cancel</AlertDialogCancel>
+                <Button variant={"destructive"} onClick={() => deleteTodo({ variables: { id: currentTodoDelete } }).finally(() => setShowTodoDeleteModal(false))}>
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </>
@@ -204,6 +265,21 @@ const mutations = {
         title
         completed
         deadline
+      }
+    }
+  `,
+  UpdateTodo: gql`
+    mutation ($id: String!) {
+      updateTodo(id: $id) {
+        completed
+        title
+      }
+    }
+  `,
+  DeleteTodo: gql`
+    mutation ($id: String!) {
+      deleteTodo(id: $id) {
+        title
       }
     }
   `,
