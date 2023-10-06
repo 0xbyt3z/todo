@@ -13,8 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "src/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { useRouter } from "next/navigation";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 
 export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof TodoSchema>; invokeFetch: any }) {

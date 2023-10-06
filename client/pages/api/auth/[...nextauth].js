@@ -18,6 +18,13 @@ export const authOptions = {
       await fetch(logOutUrl);
     },
   },
+  pages: {
+    // signIn:
+    //   "http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&scope=openid%20email%20profile&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcallback%2Fkeycloak&state=iZQwIYWSqkOWfMNanx8hvVHxDzni_lRM1gxOhR6jFF8&code_challenge=7KuUrhJtt8-GakI1FXD5E_yNgOi670hqavc91518OnU&code_challenge_method=S256",
+    // error: '/auth/error', // Error code passed in query string as ?error=
+    // verifyRequest: '/auth/verify-request', // (used for check email message)
+    // newUser: '/auth/new-user' // New users will be directed here on first sign in (leave the property out if not of interest)
+  },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       return true;

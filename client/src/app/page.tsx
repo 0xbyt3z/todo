@@ -78,19 +78,11 @@ export default function Home() {
 
     if (title === "") {
       toast.error("Please Enter valid data !", { id: t });
-
+      //escape the funtion if true
       return;
     }
 
-    // const res = await fetch("http://localhost:3001/graphql", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-    //   body: JSON.stringify({
-    //     query: ``,
-    //     ,
-    //   }),
-    // })
-    const res = addTodoList({
+    addTodoList({
       variables: {
         todoListData: { title: title, email: session?.user.email },
       },

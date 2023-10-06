@@ -10,6 +10,12 @@ services:
     build: ../client
     ports:
       - 3000:3000
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=backend:3001
+      - NEXTAUTH_SECRET=dDv76XMZxpLcQtHarpWbQRF4tdmIEIO1A3utcJa12n4=
+      - KEYCLOAK_ID=myclient
+      - KEYCLOAK_SECRET=CM5J5Cy0Jeqx1lgYAZGIMVOl1B8XaSFC
+      - KEYCLOAK_ISSUER=http://keycloak:8080/realms/myrealm
     depends_on:
       - backend
   backend:
@@ -17,10 +23,11 @@ services:
     build: ../server
     ports:
       - 3001:3001
-    depends_on:
-      - postgres
+    restart: on-failure
     environment:
       - DATABASE_URL=postgresql://user:password@postgres:5432/postgres?schema=public
+    depends_on:
+      - postgres
   postgres:
     image: postgres:16-alpine3.18
     ports:
@@ -51,6 +58,8 @@ services:
       - KC_DB_PASSWORD=keycloak_password
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
-    command: ["start-dev"]
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    command: ["start-dev", "--import-realm"]
     depends_on:
       - postgres
