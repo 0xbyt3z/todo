@@ -33,7 +33,7 @@ export default function Home() {
   const [addCategory] = useMutation(mutations.CategoryQuery, {
     onError: GraphQLStateHandler.customOnError,
     onCompleted: (data) => {
-      GraphQLStateHandler.customOnCompleted(data), handleRefetchFromChild();
+      GraphQLStateHandler.customOnCompleted(data), location.reload();
     },
   });
   const [addTodoList] = useMutation(mutations.AddTodoList, {
@@ -217,7 +217,7 @@ export default function Home() {
             <div className="w-full h-auto">
               <form onSubmit={handleAddCategory} className="flex flex-col space-y-4">
                 <div className="flex flex-col">
-                  <label htmlFor="title">Title</label>
+                  <label htmlFor="title">Name</label>
                   <Input id="title" name="title" className="focus-visible:ring-0 w-[250px]" />
                 </div>
 

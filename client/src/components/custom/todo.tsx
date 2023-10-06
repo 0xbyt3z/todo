@@ -157,8 +157,9 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
                       <Checkbox onClick={() => updateTodo({ variables: { id: i.id } })} defaultChecked={i.completed} className="w-5 h-5 mr-2" />
                       {i.remarks && <div className="absolute ml-6 p-2 py-1 text-xs hidden group-hover:block border-[1px] bg-white w-fit mt-10">{i.remarks}</div>}
                       <ContextMenu>
-                        <ContextMenuTrigger>
+                        <ContextMenuTrigger className="flex items-center">
                           <span>{i.title}</span>
+                          {/* <span className="ml-10 text-xs ">{i.category !== "notset" ? i.category : ""}</span> */}
                         </ContextMenuTrigger>
                         <ContextMenuContent>
                           <ContextMenuItem
