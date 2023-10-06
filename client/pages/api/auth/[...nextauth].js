@@ -10,7 +10,7 @@ export const authOptions = {
       idToken: true,
     }),
   ],
-  secret: "Thisisthekeyasurgeinternuse",
+  secret: process.env.NEXTAUTH_SECRET,
   events: {
     async signOut({ token, session }) {
       const logOutUrl = new URL(`${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/logout`);
