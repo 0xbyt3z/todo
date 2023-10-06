@@ -71,4 +71,9 @@ export class TodoResolver {
   async deleteTodo(@Args('id') id: string) {
     return this.todoService.deleteTodo(id);
   }
+
+  @Mutation((returns) => TodoList)
+  async deleteTodoList(@Args('id') id: string) {
+    return this.todoService.deleteTodoList(id);
+  }
 }

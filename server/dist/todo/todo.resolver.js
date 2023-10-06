@@ -60,6 +60,9 @@ let TodoResolver = class TodoResolver {
     async deleteTodo(id) {
         return this.todoService.deleteTodo(id);
     }
+    async deleteTodoList(id) {
+        return this.todoService.deleteTodoList(id);
+    }
 };
 exports.TodoResolver = TodoResolver;
 __decorate([
@@ -145,6 +148,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "deleteTodo", null);
+__decorate([
+    (0, graphql_1.Mutation)((returns) => todo_model_1.TodoList),
+    __param(0, (0, graphql_1.Args)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TodoResolver.prototype, "deleteTodoList", null);
 exports.TodoResolver = TodoResolver = __decorate([
     (0, graphql_1.Resolver)(),
     __metadata("design:paramtypes", [todo_service_1.TodoService])

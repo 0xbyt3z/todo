@@ -125,4 +125,9 @@ export class TodoService {
       where: { id },
     });
   }
+  async deleteTodoList(id: string) {
+    return await this.prisma.todoList.delete({
+      where: { id },
+    });
+  }
 }

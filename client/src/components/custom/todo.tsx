@@ -24,6 +24,7 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
   const [isCollaped, setIsCollapsed] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [showTodoDeleteModal, setShowTodoDeleteModal] = useState(false);
+  const [showTodoListDeleteModal, setShowTodoListDeleteModal] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { data: session, status } = useSession();
 
@@ -41,6 +42,13 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
     },
   });
   const [deleteTodo] = useMutation(mutations.DeleteTodo, {
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: (data) => {
+      GraphQLStateHandler.customOnCompleted(data), invokeFetch();
+    },
+  });
+
+  const [deleteTodoList] = useMutation(mutations.DeleteTodList, {
     onError: GraphQLStateHandler.customOnError,
     onCompleted: (data) => {
       GraphQLStateHandler.customOnCompleted(data), invokeFetch();
@@ -111,8 +119,17 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
             <span className="text-sm text-gray-600">
               {completedTaskCount}/{d.Todo.length} Tasks
             </span>
+            {/* delete todo list */}
+            <svg onClick={() => setShowTodoListDeleteModal(true)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 ml-3 text-red-500">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                clipRule="evenodd"
+              />
+            </svg>
+
             {/* add todo dialog */}
-            <svg onClick={() => setShowModal(true)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 ml-3 hover:bg-gray-100 rounded-md">
+            <svg onClick={() => setShowModal(true)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 ml-1 hover:bg-gray-100 rounded-md">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
             </svg>
             <svg
@@ -226,11 +243,27 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>This action cannot be undone. This will permanently delete your account and remove your data from our servers.</AlertDialogDescription>
+                <AlertDialogDescription>This will delete this task from the database.</AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel onClick={() => setShowTodoDeleteModal(false)}>Cancel</AlertDialogCancel>
                 <Button variant={"destructive"} onClick={() => deleteTodo({ variables: { id: currentTodoDelete } }).finally(() => setShowTodoDeleteModal(false))}>
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* alert confirmation delete todo */}
+          <AlertDialog open={showTodoListDeleteModal}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>This will delete this list from the database.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setShowTodoListDeleteModal(false)}>Cancel</AlertDialogCancel>
+                <Button variant={"destructive"} onClick={() => deleteTodoList({ variables: { id: d.id } }).finally(() => setShowTodoListDeleteModal(false))}>
                   Delete
                 </Button>
               </AlertDialogFooter>
@@ -279,6 +312,13 @@ const mutations = {
   DeleteTodo: gql`
     mutation ($id: String!) {
       deleteTodo(id: $id) {
+        title
+      }
+    }
+  `,
+  DeleteTodList: gql`
+    mutation ($id: String!) {
+      deleteTodoList(id: $id) {
         title
       }
     }

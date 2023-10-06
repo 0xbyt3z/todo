@@ -5,6 +5,22 @@ volumes:
   keycloak-realm:
     driver: local
 services:
+  frontend:
+    image: frontend-next
+    build: ../client
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+  backend:
+    image: backend-nest
+    build: ../server
+    ports:
+      - 3001:3001
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/postgres?schema=public
   postgres:
     image: postgres:16-alpine3.18
     ports:

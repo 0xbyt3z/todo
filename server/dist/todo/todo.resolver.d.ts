@@ -120,4 +120,10 @@ export declare class TodoResolver {
         category: string;
         created_at: Date;
     }>;
+    deleteTodoList(id: string): Promise<{
+        id: string;
+        uId: string;
+        title: string;
+        created_at: Date;
+    }>;
 }
