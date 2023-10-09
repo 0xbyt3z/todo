@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { ApolloWrapper } from "src/lib/apollo-wrapper";
 import { Toaster } from "react-hot-toast";
-import { SessionProvider } from "next-auth/react";
 import { Wrapper } from "@/components/custom/wrapper";
 
 export const metadata: Metadata = {
