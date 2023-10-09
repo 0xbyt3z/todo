@@ -45,7 +45,7 @@ function NavBar() {
             Logout
           </Button>
         ) : (
-          <Button variant={"link"} onClick={() => signIn("keycloak")}>
+          <Button variant={"link"} onClick={() => signIn()}>
             Signin
           </Button>
         )}

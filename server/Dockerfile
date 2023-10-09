@@ -1,23 +1,35 @@
-# Base image
-FROM node:18
+FROM node:18-alpine as deps
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-
-# Install app dependencies
-RUN npm install
-
-# Bundle app source
+COPY tsconfig.json ./
+COPY prisma/schema.prisma ./
 COPY . .
 
-# initialize prisma client
+RUN npm install
+
+
+FROM node:18-alpine as build
+WORKDIR /usr/src/app
+
+COPY --from=deps /usr/src/app/package*.json ./
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+COPY --from=deps /usr/src/app/tsconfig.json ./tsconfig.json
+COPY --from=deps /usr/src/app/prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=deps /usr/src/app/ ./
+
 RUN npx prisma generate
 
-# Creates a "dist" folder with the production build
 RUN npm run build
 
-# Start the server using the production build
-CMD [ "npm","run","start:prod" ]
+
+FROM node:18-alpine
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/package*.json ./
+COPY --from=build /usr/src/app/tsconfig.json ./tsconfig.json
+COPY --from=build /usr/src/app/prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=build /usr/src/app/dist ./dist
+
+CMD [ "npm","run","start:prod"]
