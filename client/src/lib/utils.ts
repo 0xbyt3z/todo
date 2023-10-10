@@ -13,7 +13,7 @@ export const GraphQLStateHandler = {
     toast.remove();
     toast.error(error.message);
   },
-  customOnCompleted(data: any, clientOptions: any = null) {
+  customOnCompleted(data: any = null, clientOptions: any = null) {
     toast.remove();
     toast.success("Done !");
   },

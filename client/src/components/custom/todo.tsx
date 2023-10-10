@@ -27,7 +27,10 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { data: session, status } = useSession();
 
-  const { data: categories, refetch: refetchCategories } = useQuery(queries.GetUserCategories);
+  const { data: categories, refetch: refetchCategories } = useQuery(queries.GetUserCategories, {
+    onError: GraphQLStateHandler.customOnError,
+    onCompleted: GraphQLStateHandler.customOnCompleted,
+  });
   const [addTodo] = useMutation(mutations.AddTodo, {
     onError: GraphQLStateHandler.customOnError,
     onCompleted: (data) => {

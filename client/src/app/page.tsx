@@ -2,7 +2,7 @@
 
 import { Button } from "src/components/ui/button";
 import { GraphQLStateHandler, cn } from "src/lib/utils";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "src/components/ui/dialog";
 import { Input } from "src/components/ui/input";

@@ -2,7 +2,7 @@ import React from "react";
 
 function Loading() {
   return (
-    <div className="w-full h-24 flex items-center justify-center">
+    <div className="w-full h-24 flex items-center text-gray-500 justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 animate-spin">
         <path
           fillRule="evenodd"
