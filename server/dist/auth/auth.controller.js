@@ -5,13 +5,48 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const oidc_service_1 = require("./oidc/oidc.service");
+const auth_service_1 = require("./auth.service");
+const role_guard_1 = require("./role.guard");
 let AuthController = class AuthController {
+    constructor(oidcService, authService) {
+        this.oidcService = oidcService;
+        this.authService = authService;
+    }
+    simpleGet() {
+        return 'this route is protected';
+    }
+    getjwks(req) {
+        return this.authService.getPublicKeyFromRequest(req);
+    }
 };
 exports.AuthController = AuthController;
+__decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "simpleGet", null);
+__decorate([
+    (0, common_1.Get)('pub'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "getjwks", null);
 exports.AuthController = AuthController = __decorate([
-    (0, common_1.Controller)('auth')
+    (0, common_1.Controller)('auth'),
+    __metadata("design:paramtypes", [oidc_service_1.OidcService,
+        auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

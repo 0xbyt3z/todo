@@ -6,9 +6,9 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TodoModule } from './todo/todo.module';
 import { PrismaService } from './prisma.service';
-import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,8 +25,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
       },
     ]),
     TodoModule,
-    AuthModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

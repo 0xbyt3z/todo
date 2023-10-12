@@ -9,26 +9,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_controller_1 = require("./auth.controller");
+const oidc_service_1 = require("./oidc/oidc.service");
+const axios_1 = require("@nestjs/axios");
+const config_1 = require("@nestjs/config");
 const auth_service_1 = require("./auth.service");
-const passport_1 = require("@nestjs/passport");
-const constants_1 = require("./constants");
 const jwt_1 = require("@nestjs/jwt");
-const jwt_strategy_1 = require("./jwt.strategy");
 const prisma_service_1 = require("../prisma.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            passport_1.PassportModule,
-            jwt_1.JwtModule.register({
-                secret: constants_1.jwtConstants.secret,
-                signOptions: { expiresIn: '60s' },
-            }),
-        ],
+        imports: [axios_1.HttpModule, jwt_1.JwtModule.register({})],
         controllers: [auth_controller_1.AuthController],
-        providers: [prisma_service_1.PrismaService, auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
+        providers: [oidc_service_1.OidcService, config_1.ConfigService, auth_service_1.AuthService, prisma_service_1.PrismaService],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

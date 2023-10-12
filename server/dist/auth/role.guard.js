@@ -8,28 +8,31 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var RoleGuard_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LocalStrategy = void 0;
-const passport_local_1 = require("passport-local");
-const passport_1 = require("@nestjs/passport");
+exports.RoleGuard = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
+const oidc_service_1 = require("./oidc/oidc.service");
 const auth_service_1 = require("./auth.service");
-let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)(passport_local_1.Strategy) {
-    constructor(authService) {
-        super();
+let RoleGuard = RoleGuard_1 = class RoleGuard {
+    constructor(jwtService, oidcService, authService) {
+        this.jwtService = jwtService;
+        this.oidcService = oidcService;
         this.authService = authService;
+        this.logger = new common_1.Logger(RoleGuard_1.name);
+        console.log('can activate menthod call from the custom guard');
     }
-    async validate(email) {
-        const user = await this.authService.findUser(email);
-        if (!user) {
-            throw new common_1.UnauthorizedException();
-        }
-        return user;
+    async canActivate(context) {
+        const isUserValid = this.authService.validate(context);
+        return isUserValid;
     }
 };
-exports.LocalStrategy = LocalStrategy;
-exports.LocalStrategy = LocalStrategy = __decorate([
+exports.RoleGuard = RoleGuard;
+exports.RoleGuard = RoleGuard = RoleGuard_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
-], LocalStrategy);
-//# sourceMappingURL=local.strategy.js.map
+    __metadata("design:paramtypes", [jwt_1.JwtService,
+        oidc_service_1.OidcService,
+        auth_service_1.AuthService])
+], RoleGuard);
+//# sourceMappingURL=role.guard.js.map

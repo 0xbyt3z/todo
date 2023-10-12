@@ -15,9 +15,9 @@ const apollo_1 = require("@nestjs/apollo");
 const path_1 = require("path");
 const todo_module_1 = require("./todo/todo.module");
 const prisma_service_1 = require("./prisma.service");
-const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
 const throttler_1 = require("@nestjs/throttler");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -37,8 +37,8 @@ exports.AppModule = AppModule = __decorate([
                 },
             ]),
             todo_module_1.TodoModule,
-            auth_module_1.AuthModule,
             users_module_1.UsersModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, prisma_service_1.PrismaService],

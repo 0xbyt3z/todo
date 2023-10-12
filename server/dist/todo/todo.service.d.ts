@@ -9,11 +9,13 @@ export declare class TodoService {
     allUsers(): Promise<{
         id: string;
         email: string;
+        isBanned: boolean;
         created_at: Date;
     }[]>;
     getUser(email: string): Promise<{
         id: string;
         email: string;
+        isBanned: boolean;
         created_at: Date;
     }>;
     getTodoLists(email: string): Promise<({
@@ -76,6 +78,7 @@ export declare class TodoService {
     addUser(data: AddUserInput): Promise<{
         id: string;
         email: string;
+        isBanned: boolean;
         created_at: Date;
     }>;
     addTodoList(data: TodoListInput): Promise<{
