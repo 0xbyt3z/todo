@@ -9,6 +9,9 @@ export class User {
   email: string;
 
   @Field({ nullable: true })
+  refreshToken: string;
+
+  @Field({ nullable: true })
   created_at: Date;
 
   @Field((type) => [TodoList])

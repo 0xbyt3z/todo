@@ -21,9 +21,7 @@ export class RoleGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly oidcService: OidcService,
     private readonly authService: AuthService,
-  ) {
-    console.log('can activate menthod call from the custom guard');
-  }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isUserValid = this.authService.validate(context);

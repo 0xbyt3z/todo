@@ -6,19 +6,23 @@ import { AddCategoryInput } from './dto/cat.input';
 export declare class TodoResolver {
     private readonly todoService;
     constructor(todoService: TodoService);
+    currentUser(user: any): Promise<any>;
     allUsers(): Promise<{
         id: string;
         email: string;
         isBanned: boolean;
         created_at: Date;
+        refreshToken: string;
     }[]>;
     getUser(email: string): Promise<{
         id: string;
         email: string;
         isBanned: boolean;
         created_at: Date;
+        refreshToken: string;
     }>;
-    getTodoLists(email: string): Promise<({
+    getRefreshToken(email: string): Promise<string>;
+    getTodoLists(user: string): Promise<({
         Todo: {
             id: string;
             lId: string;
@@ -35,7 +39,7 @@ export declare class TodoResolver {
         title: string;
         created_at: Date;
     })[]>;
-    getTodoListsWithPagiantion(args: TodoListPaginationInput): Promise<({
+    getTodoListsWithPagiantion(args: TodoListPaginationInput, user: string): Promise<({
         Todo: {
             id: string;
             lId: string;
@@ -69,7 +73,7 @@ export declare class TodoResolver {
         title: string;
         created_at: Date;
     }>;
-    getUserCategories(email: string): Promise<{
+    getUserCategories(user: string): Promise<{
         id: string;
         email: string;
         name: string;
@@ -80,8 +84,9 @@ export declare class TodoResolver {
         email: string;
         isBanned: boolean;
         created_at: Date;
+        refreshToken: string;
     }>;
-    addTodoList(todoListData: TodoListInput): Promise<{
+    addTodoList(todoListData: TodoListInput, user: string): Promise<{
         id: string;
         uId: string;
         title: string;
@@ -97,7 +102,7 @@ export declare class TodoResolver {
         category: string;
         created_at: Date;
     }>;
-    addCategory(catData: AddCategoryInput): Promise<{
+    addCategory(catData: AddCategoryInput, user: string): Promise<{
         id: string;
         email: string;
         name: string;
@@ -128,5 +133,12 @@ export declare class TodoResolver {
         uId: string;
         title: string;
         created_at: Date;
+    }>;
+    updateUserRefreshToken(token: string, user: string): Promise<{
+        id: string;
+        email: string;
+        isBanned: boolean;
+        created_at: Date;
+        refreshToken: string;
     }>;
 }

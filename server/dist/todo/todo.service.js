@@ -26,6 +26,18 @@ let TodoService = class TodoService {
             },
         });
     }
+    async getRefreshToken(email) {
+        if (email == '') {
+            return '';
+        }
+        const res = await this.prisma.user.findUnique({
+            where: {
+                email,
+            },
+        });
+        console.log(res.refreshToken);
+        return res.refreshToken;
+    }
     async getTodoLists(email) {
         return await this.prisma.todoList.findMany({
             where: {
@@ -39,10 +51,10 @@ let TodoService = class TodoService {
             },
         });
     }
-    async getTodoListsWithPagination(args) {
+    async getTodoListsWithPagination(args, user) {
         return await this.prisma.todoList.findMany({
             where: {
-                user: { email: args.email },
+                user: { email: user },
             },
             include: {
                 Todo: { orderBy: { created_at: 'asc' } },
@@ -78,11 +90,11 @@ let TodoService = class TodoService {
             },
         });
     }
-    async addTodoList(data) {
+    async addTodoList(data, user) {
         return await this.prisma.todoList.create({
             data: {
                 title: data.title,
-                user: { connect: { email: data.email } },
+                user: { connect: { email: user } },
             },
         });
     }
@@ -98,10 +110,10 @@ let TodoService = class TodoService {
             },
         });
     }
-    async addCategory(data) {
+    async addCategory(data, user) {
         return await this.prisma.usercategories.create({
             data: {
-                email: data.email,
+                email: user,
                 name: data.name,
                 color: data.color,
             },
@@ -125,6 +137,20 @@ let TodoService = class TodoService {
     async deleteTodoList(id) {
         return await this.prisma.todoList.delete({
             where: { id },
+        });
+    }
+    async updateUserRefreshToken(token, user) {
+        console.log(user);
+        return await this.prisma.user.upsert({
+            where: { email: user },
+            update: {
+                refreshToken: token,
+            },
+            create: {
+                email: user,
+                isBanned: false,
+                refreshToken: token,
+            },
         });
     }
 };

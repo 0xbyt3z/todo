@@ -24,6 +24,10 @@ __decorate([
 ], User.prototype, "email", void 0);
 __decorate([
     (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "refreshToken", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", Date)
 ], User.prototype, "created_at", void 0);
 __decorate([

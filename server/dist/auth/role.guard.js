@@ -21,7 +21,6 @@ let RoleGuard = RoleGuard_1 = class RoleGuard {
         this.oidcService = oidcService;
         this.authService = authService;
         this.logger = new common_1.Logger(RoleGuard_1.name);
-        console.log('can activate menthod call from the custom guard');
     }
     async canActivate(context) {
         const isUserValid = this.authService.validate(context);

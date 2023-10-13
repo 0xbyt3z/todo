@@ -49,13 +49,25 @@ let AuthService = AuthService_1 = class AuthService {
     }
     async validate(payload) {
         let token = '';
-        payload.getArgs()[0]['rawHeaders'].map((s) => {
-            if (s.includes('Bearer')) {
-                token = s.split(' ')[1];
-            }
-        });
-        const secret = await (0, rxjs_1.firstValueFrom)(this.getPublicKey(this.getTokenDecoded(token)));
+        if (payload.getArgs()[0] === undefined) {
+            payload.getArgs()[2].req['rawHeaders'].map((s) => {
+                if (s.includes('Bearer')) {
+                    token = s.split(' ')[1];
+                }
+            });
+        }
+        else if (payload.getArgs()[0]['rawHeaders'] !== undefined) {
+            payload.getArgs()[0]['rawHeaders'].map((s) => {
+                if (s.includes('Bearer')) {
+                    token = s.split(' ')[1];
+                }
+            });
+        }
+        else {
+            return false;
+        }
         try {
+            const secret = await (0, rxjs_1.firstValueFrom)(this.getPublicKey(this.getTokenDecoded(token)));
             this.jwtService.verify(token, {
                 secret: secret,
                 issuer: this.getTokenDecoded(token).payload.iss,

@@ -96,9 +96,7 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
 
   useEffect(() => {
     if (status == "authenticated") {
-      refetchCategories({
-        email: session.user.email,
-      });
+      refetchCategories();
     }
   }, [status]);
 
@@ -280,8 +278,8 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
 
 const queries = {
   GetUserCategories: gql`
-    query GetUser($email: String!) {
-      getUserCategories(email: $email) {
+    query GetUser {
+      getUserCategories {
         name
         color
       }

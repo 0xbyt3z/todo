@@ -11,13 +11,16 @@ export declare class TodoService {
         email: string;
         isBanned: boolean;
         created_at: Date;
+        refreshToken: string;
     }[]>;
     getUser(email: string): Promise<{
         id: string;
         email: string;
         isBanned: boolean;
         created_at: Date;
+        refreshToken: string;
     }>;
+    getRefreshToken(email: string): Promise<string>;
     getTodoLists(email: string): Promise<({
         Todo: {
             id: string;
@@ -35,7 +38,7 @@ export declare class TodoService {
         title: string;
         created_at: Date;
     })[]>;
-    getTodoListsWithPagination(args: TodoListPaginationInput): Promise<({
+    getTodoListsWithPagination(args: TodoListPaginationInput, user: string): Promise<({
         Todo: {
             id: string;
             lId: string;
@@ -80,8 +83,9 @@ export declare class TodoService {
         email: string;
         isBanned: boolean;
         created_at: Date;
+        refreshToken: string;
     }>;
-    addTodoList(data: TodoListInput): Promise<{
+    addTodoList(data: TodoListInput, user: string): Promise<{
         id: string;
         uId: string;
         title: string;
@@ -97,7 +101,7 @@ export declare class TodoService {
         category: string;
         created_at: Date;
     }>;
-    addCategory(data: AddCategoryInput): Promise<{
+    addCategory(data: AddCategoryInput, user: string): Promise<{
         id: string;
         email: string;
         name: string;
@@ -128,5 +132,12 @@ export declare class TodoService {
         uId: string;
         title: string;
         created_at: Date;
+    }>;
+    updateUserRefreshToken(token: string, user: string): Promise<{
+        id: string;
+        email: string;
+        isBanned: boolean;
+        created_at: Date;
+        refreshToken: string;
     }>;
 }

@@ -2,7 +2,7 @@ import { PrismaService } from './../prisma.service';
 import { ExecutionContext } from '@nestjs/common';
 import { OidcService } from './oidc/oidc.service';
 import { JwtService } from '@nestjs/jwt';
-interface TypeJWT {
+export interface TypeJWT {
     header: {
         kid: string;
         alg: string;
@@ -24,4 +24,3 @@ export declare class AuthService {
     getPublicKeyFromRequest(req: Request): import("rxjs").Observable<any>;
     validate(payload: ExecutionContext): Promise<boolean>;
 }
-export {};

@@ -17,10 +17,6 @@ exports.TodoListInput = TodoListInput;
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], TodoListInput.prototype, "email", void 0);
-__decorate([
-    (0, graphql_1.Field)(),
-    __metadata("design:type", String)
 ], TodoListInput.prototype, "title", void 0);
 exports.TodoListInput = TodoListInput = __decorate([
     (0, graphql_1.InputType)()
@@ -28,10 +24,6 @@ exports.TodoListInput = TodoListInput = __decorate([
 let TodoListPaginationInput = class TodoListPaginationInput {
 };
 exports.TodoListPaginationInput = TodoListPaginationInput;
-__decorate([
-    (0, graphql_1.Field)(),
-    __metadata("design:type", String)
-], TodoListPaginationInput.prototype, "email", void 0);
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", Number)

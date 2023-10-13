@@ -5,31 +5,49 @@ import { AddUserInput, GetUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
 import { TodoListInput, TodoListPaginationInput } from './dto/todolist.input';
 import { AddCategoryInput } from './dto/cat.input';
+import { UseGuards } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/decorator/currentuser.decorator';
+import { RoleGuard } from 'src/auth/role.guard';
 
 @Resolver()
 export class TodoResolver {
   constructor(private readonly todoService: TodoService) {}
+
+  @UseGuards(RoleGuard)
+  @Query((returns) => String)
+  async currentUser(@CurrentUser() user: any) {
+    return user;
+  }
 
   @Query((returns) => [User])
   async allUsers() {
     return this.todoService.allUsers();
   }
 
+  @UseGuards(RoleGuard)
   @Query((returns) => User)
-  async getUser(@Args('email') email: string) {
+  async getUser(@CurrentUser() email: string) {
     return this.todoService.getUser(email);
   }
 
+  //do not add guard to this
+  //having the guards prevents getting refreshToken when the JWT is expired
+  @Query((returns) => String)
+  async getRefreshToken(@CurrentUser() email: string) {
+    return this.todoService.getRefreshToken(email);
+  }
+
   @Query((returns) => [TodoList])
-  async getTodoLists(@Args('email') email: string) {
-    return this.todoService.getTodoLists(email);
+  async getTodoLists(@CurrentUser() user: string) {
+    return this.todoService.getTodoLists(user);
   }
 
   @Query((returns) => [TodoList])
   async getTodoListsWithPagiantion(
     @Args('args') args: TodoListPaginationInput,
+    @CurrentUser() user: string,
   ) {
-    return this.todoService.getTodoListsWithPagination(args);
+    return this.todoService.getTodoListsWithPagination(args, user);
   }
 
   @Query((returns) => TodoList)
@@ -38,8 +56,8 @@ export class TodoResolver {
   }
 
   @Query((returns) => [Category])
-  async getUserCategories(@Args('email') email: string) {
-    return this.todoService.getUserCategories(email);
+  async getUserCategories(@CurrentUser() user: string) {
+    return this.todoService.getUserCategories(user);
   }
 
   @Mutation((returns) => User)
@@ -48,8 +66,11 @@ export class TodoResolver {
   }
 
   @Mutation((returns) => Todo)
-  async addTodoList(@Args('todoListData') todoListData: TodoListInput) {
-    return this.todoService.addTodoList(todoListData);
+  async addTodoList(
+    @Args('todoListData') todoListData: TodoListInput,
+    @CurrentUser() user: string,
+  ) {
+    return this.todoService.addTodoList(todoListData, user);
   }
 
   @Mutation((returns) => Todo)
@@ -58,8 +79,11 @@ export class TodoResolver {
   }
 
   @Mutation((returns) => Category)
-  async addCategory(@Args('catData') catData: AddCategoryInput) {
-    return this.todoService.addCategory(catData);
+  async addCategory(
+    @Args('catData') catData: AddCategoryInput,
+    @CurrentUser() user: string,
+  ) {
+    return this.todoService.addCategory(catData, user);
   }
 
   @Mutation((returns) => Todo)
@@ -75,5 +99,13 @@ export class TodoResolver {
   @Mutation((returns) => TodoList)
   async deleteTodoList(@Args('id') id: string) {
     return this.todoService.deleteTodoList(id);
+  }
+
+  @Mutation((returns) => User)
+  async updateUserRefreshToken(
+    @Args('token') token: string,
+    @CurrentUser() user: string,
+  ) {
+    return this.todoService.updateUserRefreshToken(token, user);
   }
 }

@@ -1,6 +1,7 @@
 export declare class User {
     id: string;
     email: string;
+    refreshToken: string;
     created_at: Date;
     TodoList: TodoList[];
 }

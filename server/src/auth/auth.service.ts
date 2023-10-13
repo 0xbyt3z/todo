@@ -7,7 +7,7 @@ import { decode } from 'jsonwebtoken';
 import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
 
-interface TypeJWT {
+export interface TypeJWT {
   header: { kid: string; alg: string };
   payload: { iss: string; email: string; preferred_username: string };
 }
@@ -51,15 +51,34 @@ export class AuthService {
 
   async validate(payload: ExecutionContext): Promise<boolean> {
     let token = '';
-    (payload.getArgs()[0]['rawHeaders'] as []).map((s: string) => {
-      if (s.includes('Bearer')) {
-        token = s.split(' ')[1];
-      }
-    });
-    const secret = await firstValueFrom(
-      this.getPublicKey(this.getTokenDecoded(token)),
-    );
+
+    //check for the context whether it is a typical HTTP request or from the graphql endpoint
+    if (payload.getArgs()[0] === undefined) {
+      //if true the context is from the graghQL endpoint
+      (payload.getArgs()[2].req['rawHeaders'] as []).map((s: string) => {
+        if (s.includes('Bearer')) {
+          token = s.split(' ')[1];
+        }
+      });
+    } else if (payload.getArgs()[0]['rawHeaders'] !== undefined) {
+      (payload.getArgs()[0]['rawHeaders'] as []).map((s: string) => {
+        if (s.includes('Bearer')) {
+          token = s.split(' ')[1];
+        }
+      });
+    } else {
+      //headers may not avaialble sometimes
+      //maybe because of side effects
+      //or the access_token is collected from the nextauth session and
+      //the session may not available at the time of the request
+      return false;
+    }
+
     try {
+      const secret = await firstValueFrom(
+        this.getPublicKey(this.getTokenDecoded(token)),
+      );
+
       this.jwtService.verify(token, {
         secret: secret,
         issuer: this.getTokenDecoded(token).payload.iss,

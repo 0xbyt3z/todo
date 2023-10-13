@@ -4,7 +4,6 @@
 
 input AddCategoryInput {
   color: String!
-  email: String!
   name: String!
 }
 
@@ -32,15 +31,18 @@ type Mutation {
   deleteTodo(id: String!): Todo!
   deleteTodoList(id: String!): TodoList!
   updateTodo(id: String!): Todo!
+  updateUserRefreshToken(token: String!): User!
 }
 
 type Query {
   allUsers: [User!]!
+  currentUser: String!
+  getRefreshToken: String!
   getTodoList(id: String!): TodoList!
-  getTodoLists(email: String!): [TodoList!]!
+  getTodoLists: [TodoList!]!
   getTodoListsWithPagiantion(args: TodoListPaginationInput!): [TodoList!]!
-  getUser(email: String!): User!
-  getUserCategories(email: String!): [Category!]!
+  getUser: User!
+  getUserCategories: [Category!]!
 }
 
 type Todo {
@@ -72,12 +74,10 @@ type TodoList {
 }
 
 input TodoListInput {
-  email: String!
   title: String!
 }
 
 input TodoListPaginationInput {
-  email: String!
   first: Float!
   skip: Float!
 }
@@ -87,4 +87,5 @@ type User {
   created_at: DateTime
   email: String!
   id: ID!
+  refreshToken: String
 }

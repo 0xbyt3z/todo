@@ -20,6 +20,19 @@ export class TodoService {
     });
   }
 
+  async getRefreshToken(email: string) {
+    if (email == '') {
+      return '';
+    }
+    const res = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    console.log(res.refreshToken);
+    return res.refreshToken;
+  }
+
   async getTodoLists(email: string) {
     return await this.prisma.todoList.findMany({
       where: {
@@ -34,10 +47,13 @@ export class TodoService {
     });
   }
 
-  async getTodoListsWithPagination(args: TodoListPaginationInput) {
+  async getTodoListsWithPagination(
+    args: TodoListPaginationInput,
+    user: string,
+  ) {
     return await this.prisma.todoList.findMany({
       where: {
-        user: { email: args.email },
+        user: { email: user },
       },
       include: {
         Todo: { orderBy: { created_at: 'asc' } },
@@ -77,11 +93,11 @@ export class TodoService {
     });
   }
 
-  async addTodoList(data: TodoListInput) {
+  async addTodoList(data: TodoListInput, user: string) {
     return await this.prisma.todoList.create({
       data: {
         title: data.title,
-        user: { connect: { email: data.email } },
+        user: { connect: { email: user } },
       },
     });
   }
@@ -99,10 +115,10 @@ export class TodoService {
     });
   }
 
-  async addCategory(data: AddCategoryInput) {
+  async addCategory(data: AddCategoryInput, user: string) {
     return await this.prisma.usercategories.create({
       data: {
-        email: data.email,
+        email: user,
         name: data.name,
         color: data.color,
       },
@@ -125,9 +141,25 @@ export class TodoService {
       where: { id },
     });
   }
+
   async deleteTodoList(id: string) {
     return await this.prisma.todoList.delete({
       where: { id },
+    });
+  }
+
+  async updateUserRefreshToken(token: string, user: string) {
+    console.log(user);
+    return await this.prisma.user.upsert({
+      where: { email: user },
+      update: {
+        refreshToken: token,
+      },
+      create: {
+        email: user,
+        isBanned: false,
+        refreshToken: token,
+      },
     });
   }
 }

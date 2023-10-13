@@ -12,12 +12,26 @@ const todo_resolver_1 = require("./todo.resolver");
 const todo_service_1 = require("./todo.service");
 const prisma_service_1 = require("../prisma.service");
 const todo_controller_1 = require("./todo.controller");
+const jwt_1 = require("@nestjs/jwt");
+const oidc_service_1 = require("../auth/oidc/oidc.service");
+const axios_1 = require("@nestjs/axios");
+const config_1 = require("@nestjs/config");
+const auth_service_1 = require("../auth/auth.service");
 let TodoModule = class TodoModule {
 };
 exports.TodoModule = TodoModule;
 exports.TodoModule = TodoModule = __decorate([
     (0, common_1.Module)({
-        providers: [todo_resolver_1.TodoResolver, todo_service_1.TodoService, prisma_service_1.PrismaService],
+        imports: [axios_1.HttpModule],
+        providers: [
+            todo_resolver_1.TodoResolver,
+            todo_service_1.TodoService,
+            prisma_service_1.PrismaService,
+            jwt_1.JwtService,
+            oidc_service_1.OidcService,
+            config_1.ConfigService,
+            auth_service_1.AuthService,
+        ],
         controllers: [todo_controller_1.TodoController],
     })
 ], TodoModule);

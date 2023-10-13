@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
-
+import jsonwebtoken from "jsonwebtoken";
 export const authOptions = {
   providers: [
     KeycloakProvider({
@@ -26,48 +26,71 @@ export const authOptions = {
     },
     async session({ session, user, token }) {
       session.user.id = token.sub;
-      session.user.accessToken = token.id_token;
+      session.user.accessToken = token.access_token;
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      console.log(token);
-      const res = await fetch("http://localhost:3001/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: `query GetUser($email: String!) {
-        getUser(email: $email) {
-          id
-          email
-        }
-      }`,
-          variables: { email: token.email },
-        }),
-      }).then((res) => res.json());
+      //check weather the jwt is expired or not
+      const isExpired = jsonwebtoken.decode(token.access_token)?.exp * 1000 <= Date.now();
 
-      if (!res.data) {
-        await fetch("http://localhost:3001/graphql", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            query: `mutation($input:AddUserInput!){
-              addUser(userData:$input){
-                id
-              }
-            }`,
-            variables: { input: { email: token.email } },
-          }),
-        }).then((res) => res.json());
+      if (isExpired) {
+        console.log(renewAccessToken(token.id_token));
       }
+
       if (account) {
+        //store the refresh_token in the database when the user is created for the first time
+        updateUserRefreshKey(account);
+        //storing the access_token in the nextauth
+        //users can be logout only using the id_token
+        //guess it concern about the acr feild in the JWT
         token.id_token = account.id_token;
+        token.access_token = account.access_token;
       }
       return token;
     },
   },
 };
 export default NextAuth(authOptions);
+
+const updateUserRefreshKey = async (account) => {
+  await fetch(`http://localhost:3001/graphql`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${account.id_token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `mutation($token:String!){
+    updateUserRefreshToken(token:$token){email}}`,
+      variables: {
+        token: account.refresh_token,
+      },
+    }),
+  })
+    .then((res) => res.json())
+    .catch((e) => console.log(e));
+};
+
+const renewAccessToken = async (token) => {
+  const user = await fetch(`http://localhost:3001/graphql`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `{
+        getRefreshToken 
+  }`,
+    }),
+  })
+    .then((res) => res.json())
+    .catch((e) => console.log(e));
+
+  const data = JSON.stringify({ grant_type: "refresh_token" });
+  // client_id: process.env.KEYCLOAK_SECRET, client_secret: process.env.KEYCLOAK_ID, refresh_token: user.data.getRefreshToken });
+  const res = await fetch("http://localhost:8080/realms/myrealm/protocol/openid-connect/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: data,
+  }).then((res) => res.json());
+  console.log(res);
+  console.log(data);
+};

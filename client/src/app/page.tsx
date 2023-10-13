@@ -26,7 +26,7 @@ export default function Home() {
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const { loading, data, refetch } = useQuery(queries.GetListsWithPagiantion, {
     fetchPolicy: "network-only",
-    variables: { args: { email: "", first: 0, skip: 0 } },
+    variables: { args: { first: 0, skip: 0 } },
     onError: GraphQLStateHandler.customOnError,
     onCompleted: GraphQLStateHandler.customOnCompleted,
   });
@@ -45,7 +45,7 @@ export default function Home() {
 
   const handleRefetchFromChild = () => {
     //this function will be called from children
-    refetch({ args: { email: session?.user.email, first: currentFetchSize, skip: currentPageNo * currentFetchSize } });
+    refetch({ args: { first: currentFetchSize, skip: currentPageNo * currentFetchSize } });
   };
   const handleAddCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,7 +61,7 @@ export default function Home() {
       return;
     }
 
-    addCategory({ variables: { data: { color: colorSelect, email: session?.user.email, name } } }).catch((err) => {
+    addCategory({ variables: { data: { color: colorSelect, name } } }).catch((err) => {
       toast.error("Someting went wrong !", { id: t });
       return;
     });
@@ -84,7 +84,7 @@ export default function Home() {
 
     addTodoList({
       variables: {
-        todoListData: { title: title, email: session?.user.email },
+        todoListData: { title: title },
       },
     })
       .then((res) => {
@@ -104,7 +104,7 @@ export default function Home() {
 
   useEffect(() => {
     if (status == "authenticated") {
-      refetch({ args: { email: session.user.email, first: currentFetchSize, skip: currentPageNo * currentFetchSize } });
+      refetch({ args: { first: currentFetchSize, skip: currentPageNo * currentFetchSize } });
     }
   }, [status, currentPageNo]);
 
@@ -282,8 +282,8 @@ export default function Home() {
 
 const queries = {
   QUERY: gql`
-    query getAllLists($email: String!) {
-      getTodoLists(email: $email) {
+    query getAllLists {
+      getTodoLists {
         id
         created_at
         title

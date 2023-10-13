@@ -17,10 +17,6 @@ exports.AddCategoryInput = AddCategoryInput;
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
-], AddCategoryInput.prototype, "email", void 0);
-__decorate([
-    (0, graphql_1.Field)(),
-    __metadata("design:type", String)
 ], AddCategoryInput.prototype, "name", void 0);
 __decorate([
     (0, graphql_1.Field)(),

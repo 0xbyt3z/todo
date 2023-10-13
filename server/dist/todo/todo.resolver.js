@@ -20,9 +20,15 @@ const user_input_1 = require("./dto/user.input");
 const todo_input_1 = require("./dto/todo.input");
 const todolist_input_1 = require("./dto/todolist.input");
 const cat_input_1 = require("./dto/cat.input");
+const common_1 = require("@nestjs/common");
+const currentuser_decorator_1 = require("../auth/decorator/currentuser.decorator");
+const role_guard_1 = require("../auth/role.guard");
 let TodoResolver = class TodoResolver {
     constructor(todoService) {
         this.todoService = todoService;
+    }
+    async currentUser(user) {
+        return user;
     }
     async allUsers() {
         return this.todoService.allUsers();
@@ -30,29 +36,32 @@ let TodoResolver = class TodoResolver {
     async getUser(email) {
         return this.todoService.getUser(email);
     }
-    async getTodoLists(email) {
-        return this.todoService.getTodoLists(email);
+    async getRefreshToken(email) {
+        return this.todoService.getRefreshToken(email);
     }
-    async getTodoListsWithPagiantion(args) {
-        return this.todoService.getTodoListsWithPagination(args);
+    async getTodoLists(user) {
+        return this.todoService.getTodoLists(user);
+    }
+    async getTodoListsWithPagiantion(args, user) {
+        return this.todoService.getTodoListsWithPagination(args, user);
     }
     async getTodoList(id) {
         return this.todoService.getTodoList(id);
     }
-    async getUserCategories(email) {
-        return this.todoService.getUserCategories(email);
+    async getUserCategories(user) {
+        return this.todoService.getUserCategories(user);
     }
     async addUser(userData) {
         return this.todoService.addUser(userData);
     }
-    async addTodoList(todoListData) {
-        return this.todoService.addTodoList(todoListData);
+    async addTodoList(todoListData, user) {
+        return this.todoService.addTodoList(todoListData, user);
     }
     async addTodo(todoData) {
         return this.todoService.addTodo(todoData);
     }
-    async addCategory(catData) {
-        return this.todoService.addCategory(catData);
+    async addCategory(catData, user) {
+        return this.todoService.addCategory(catData, user);
     }
     async updateTodo(id) {
         return this.todoService.updateTodo(id);
@@ -63,8 +72,19 @@ let TodoResolver = class TodoResolver {
     async deleteTodoList(id) {
         return this.todoService.deleteTodoList(id);
     }
+    async updateUserRefreshToken(token, user) {
+        return this.todoService.updateUserRefreshToken(token, user);
+    }
 };
 exports.TodoResolver = TodoResolver;
+__decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
+    (0, graphql_1.Query)((returns) => String),
+    __param(0, (0, currentuser_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TodoResolver.prototype, "currentUser", null);
 __decorate([
     (0, graphql_1.Query)((returns) => [todo_model_1.User]),
     __metadata("design:type", Function),
@@ -72,15 +92,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "allUsers", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Query)((returns) => todo_model_1.User),
-    __param(0, (0, graphql_1.Args)('email')),
+    __param(0, (0, currentuser_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getUser", null);
 __decorate([
+    (0, graphql_1.Query)((returns) => String),
+    __param(0, (0, currentuser_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TodoResolver.prototype, "getRefreshToken", null);
+__decorate([
     (0, graphql_1.Query)((returns) => [todo_model_1.TodoList]),
-    __param(0, (0, graphql_1.Args)('email')),
+    __param(0, (0, currentuser_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -88,8 +116,9 @@ __decorate([
 __decorate([
     (0, graphql_1.Query)((returns) => [todo_model_1.TodoList]),
     __param(0, (0, graphql_1.Args)('args')),
+    __param(1, (0, currentuser_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [todolist_input_1.TodoListPaginationInput]),
+    __metadata("design:paramtypes", [todolist_input_1.TodoListPaginationInput, String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getTodoListsWithPagiantion", null);
 __decorate([
@@ -101,7 +130,7 @@ __decorate([
 ], TodoResolver.prototype, "getTodoList", null);
 __decorate([
     (0, graphql_1.Query)((returns) => [todo_model_1.Category]),
-    __param(0, (0, graphql_1.Args)('email')),
+    __param(0, (0, currentuser_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -116,8 +145,9 @@ __decorate([
 __decorate([
     (0, graphql_1.Mutation)((returns) => todo_model_1.Todo),
     __param(0, (0, graphql_1.Args)('todoListData')),
+    __param(1, (0, currentuser_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [todolist_input_1.TodoListInput]),
+    __metadata("design:paramtypes", [todolist_input_1.TodoListInput, String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "addTodoList", null);
 __decorate([
@@ -130,8 +160,9 @@ __decorate([
 __decorate([
     (0, graphql_1.Mutation)((returns) => todo_model_1.Category),
     __param(0, (0, graphql_1.Args)('catData')),
+    __param(1, (0, currentuser_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [cat_input_1.AddCategoryInput]),
+    __metadata("design:paramtypes", [cat_input_1.AddCategoryInput, String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "addCategory", null);
 __decorate([
@@ -155,6 +186,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "deleteTodoList", null);
+__decorate([
+    (0, graphql_1.Mutation)((returns) => todo_model_1.User),
+    __param(0, (0, graphql_1.Args)('token')),
+    __param(1, (0, currentuser_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], TodoResolver.prototype, "updateUserRefreshToken", null);
 exports.TodoResolver = TodoResolver = __decorate([
     (0, graphql_1.Resolver)(),
     __metadata("design:paramtypes", [todo_service_1.TodoService])

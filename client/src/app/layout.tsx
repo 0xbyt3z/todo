@@ -14,9 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="shortcut icon" href="/logo-32.png" type="image/png" />
       </head>
       <body>
-        <ApolloWrapper>
-          <Wrapper>{children}</Wrapper>
-        </ApolloWrapper>
+        <Wrapper>
+          <ApolloWrapper>{children}</ApolloWrapper>
+        </Wrapper>
         <Toaster toastOptions={{ position: "bottom-right", duration: 5000 }} />
       </body>
     </html>
