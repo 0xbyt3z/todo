@@ -37,9 +37,6 @@ let TodoResolver = class TodoResolver {
     async getUser(email) {
         return this.todoService.getUser(email);
     }
-    async getRefreshToken(email) {
-        return this.todoService.getRefreshToken(email);
-    }
     async getTodoLists(user) {
         return this.todoService.getTodoLists(user);
     }
@@ -73,9 +70,6 @@ let TodoResolver = class TodoResolver {
     async deleteTodoList(id) {
         return this.todoService.deleteTodoList(id);
     }
-    async updateUserRefreshToken(token, user) {
-        return this.todoService.updateUserRefreshToken(token, user);
-    }
 };
 exports.TodoResolver = TodoResolver;
 __decorate([
@@ -100,13 +94,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getUser", null);
-__decorate([
-    (0, graphql_1.Query)((returns) => String),
-    __param(0, (0, currentuser_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], TodoResolver.prototype, "getRefreshToken", null);
 __decorate([
     (0, graphql_1.Query)((returns) => [todo_model_1.TodoList]),
     __param(0, (0, currentuser_decorator_1.CurrentUser)()),
@@ -197,14 +184,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "deleteTodoList", null);
-__decorate([
-    (0, graphql_1.Mutation)((returns) => todo_model_1.User),
-    __param(0, (0, graphql_1.Args)('token')),
-    __param(1, (0, currentuser_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], TodoResolver.prototype, "updateUserRefreshToken", null);
 exports.TodoResolver = TodoResolver = __decorate([
     (0, graphql_1.Resolver)(),
     (0, roles_decorator_1.Roles)(['todo-access']),

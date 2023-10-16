@@ -33,62 +33,33 @@ export const authOptions = {
       //check weather the jwt is expired or not
       const isExpired = jsonwebtoken.decode(token.access_token)?.exp * 1000 <= Date.now();
       if (isExpired) {
-        const refreshedTokens = await renewAccessToken(token.id_token);
+        const refreshedTokens = await renewAccessToken(token.refresh_token);
         token.access_token = refreshedTokens.access_token;
         token.exp = Date.now() + refreshedTokens.expires_in * 1000;
       }
       if (account) {
-        //store the refresh_token in the database when the user is created for the first time
-        updateUserRefreshKey(account);
+        //store the refresh_token in the token when the user is created for the first time
+        token.refresh_token = account.refresh_token;
+        // // // updateUserRefreshKey(account);
         //storing the access_token in the nextauth
         //users can be logout only using the id_token
         //guess it concern about the acr feild in the JWT
         token.id_token = account.id_token;
         token.access_token = account.access_token;
       }
-
       return token;
     },
   },
 };
 export default NextAuth(authOptions);
 
-const updateUserRefreshKey = async (account) => {
-  const res = await fetch(`http://localhost:3001/graphql`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${account.id_token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `mutation($token:String!){
-    updateUserRefreshToken(token:$token){email}}`,
-      variables: {
-        token: account.refresh_token,
-      },
-    }),
-  })
-    .then((res) => res.json())
-    .catch((e) => console.log(e));
-};
-
 const renewAccessToken = async (token) => {
-  const user = await fetch(`http://localhost:3001/graphql`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `{
-        getRefreshToken 
-  }`,
-    }),
-  })
-    .then((res) => res.json())
-    .catch((e) => console.log(e));
-
   const isRefreshTokenExpired = jsonwebtoken.decode(token.access_token)?.exp * 1000 <= Date.now();
   if (isRefreshTokenExpired) {
     console.log("Expired refresh token");
   }
 
-  const data = { grant_type: "refresh_token", client_id: process.env.KEYCLOAK_ID, client_secret: process.env.KEYCLOAK_SECRET, refresh_token: user.data.getRefreshToken };
+  const data = { grant_type: "refresh_token", client_id: process.env.KEYCLOAK_ID, client_secret: process.env.KEYCLOAK_SECRET, refresh_token: token };
   var formBody = [];
   for (var property in data) {
     var encodedKey = encodeURIComponent(property);

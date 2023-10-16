@@ -31,13 +31,11 @@ type Mutation {
   deleteTodo(id: String!): Todo!
   deleteTodoList(id: String!): TodoList!
   updateTodo(id: String!): Todo!
-  updateUserRefreshToken(token: String!): User!
 }
 
 type Query {
   allUsers: [User!]!
   currentUser: String!
-  getRefreshToken: String!
   getTodoList(id: String!): TodoList!
   getTodoLists: [TodoList!]!
   getTodoListsWithPagiantion(args: TodoListPaginationInput!): [TodoList!]!

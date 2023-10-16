@@ -26,17 +26,6 @@ let TodoService = class TodoService {
             },
         });
     }
-    async getRefreshToken(email) {
-        if (email == '') {
-            return '';
-        }
-        const res = await this.prisma.user.findUnique({
-            where: {
-                email,
-            },
-        });
-        return res.refreshToken;
-    }
     async getTodoLists(email) {
         return await this.prisma.todoList.findMany({
             where: {
@@ -136,19 +125,6 @@ let TodoService = class TodoService {
     async deleteTodoList(id) {
         return await this.prisma.todoList.delete({
             where: { id },
-        });
-    }
-    async updateUserRefreshToken(token, user) {
-        return await this.prisma.user.upsert({
-            where: { email: user },
-            update: {
-                refreshToken: token,
-            },
-            create: {
-                email: user,
-                isBanned: false,
-                refreshToken: token,
-            },
         });
     }
 };

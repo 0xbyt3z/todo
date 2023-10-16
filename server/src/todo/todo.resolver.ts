@@ -35,13 +35,6 @@ export class TodoResolver {
     return this.todoService.getUser(email);
   }
 
-  //do not add guard to this
-  //having the guards prevents getting refreshToken when the JWT is expired
-  @Query((returns) => String)
-  async getRefreshToken(@CurrentUser() email: string) {
-    return this.todoService.getRefreshToken(email);
-  }
-
   @Query((returns) => [TodoList])
   async getTodoLists(@CurrentUser() user: string) {
     return this.todoService.getTodoLists(user);
@@ -114,15 +107,5 @@ export class TodoResolver {
   @Mutation((returns) => TodoList)
   async deleteTodoList(@Args('id') id: string) {
     return this.todoService.deleteTodoList(id);
-  }
-
-  //do not add the guard for this too
-  //called from the server when the refresh token is expired
-  @Mutation((returns) => User)
-  async updateUserRefreshToken(
-    @Args('token') token: string,
-    @CurrentUser() user: string,
-  ) {
-    return this.todoService.updateUserRefreshToken(token, user);
   }
 }

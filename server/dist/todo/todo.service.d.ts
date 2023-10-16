@@ -11,16 +11,13 @@ export declare class TodoService {
         email: string;
         isBanned: boolean;
         created_at: Date;
-        refreshToken: string;
     }[]>;
     getUser(email: string): Promise<{
         id: string;
         email: string;
         isBanned: boolean;
         created_at: Date;
-        refreshToken: string;
     }>;
-    getRefreshToken(email: string): Promise<string>;
     getTodoLists(email: string): Promise<({
         Todo: {
             id: string;
@@ -83,7 +80,6 @@ export declare class TodoService {
         email: string;
         isBanned: boolean;
         created_at: Date;
-        refreshToken: string;
     }>;
     addTodoList(data: TodoListInput, user: string): Promise<{
         id: string;
@@ -132,12 +128,5 @@ export declare class TodoService {
         uId: string;
         title: string;
         created_at: Date;
-    }>;
-    updateUserRefreshToken(token: string, user: string): Promise<{
-        id: string;
-        email: string;
-        isBanned: boolean;
-        created_at: Date;
-        refreshToken: string;
     }>;
 }
