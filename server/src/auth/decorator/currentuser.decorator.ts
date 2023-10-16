@@ -12,7 +12,9 @@ export const CurrentUser = createParamDecorator(
         token = s.split(' ')[1];
       }
     });
-    const decode: TypeJWT = jsonwebtoken.decode(token, { complete: true });
+    const decode: any = jsonwebtoken.decode(token, {
+      complete: true,
+    });
     if (decode) {
       return decode?.payload.email;
     }

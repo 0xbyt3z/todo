@@ -13,7 +13,7 @@ export function ApolloWrapper({ children }: React.PropsWithChildren) {
     }
   }
   const httpLink = createHttpLink({
-    uri: "http://localhost:3001/graphql",
+    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
     headers: { authorization: session ? `Bearer ${session.user.accessToken}` : "" },
   });
   const client = new ApolloClient({

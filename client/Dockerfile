@@ -9,7 +9,6 @@ COPY package.json ./
 COPY pnpm-lock.yaml ./
 RUN pnpm install
 
-COPY middleware.js ./
 COPY . .
 RUN pnpm run build
 
@@ -24,7 +23,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
 COPY --from=deps /app/.next ./.next
 COPY --from=deps /app/next.config.js ./next.config.js
-COPY --from=deps /app/middleware.js ./middleware.js
 
 EXPOSE 3000
 CMD ["npm","start"]

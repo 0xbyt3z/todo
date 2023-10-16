@@ -23,7 +23,7 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     simpleGet() {
-        return 'this route is protected';
+        return process.env.KEYCLOAK_BASE_URL;
     }
     getjwks(req) {
         return this.authService.getPublicKeyFromRequest(req);
