@@ -17,7 +17,6 @@ exports.CurrentUser = (0, common_1.createParamDecorator)((data, context) => {
     if (decode) {
         return decode?.payload.email;
     }
-    console.log(decode);
     return '';
 });
 //# sourceMappingURL=currentuser.decorator.js.map

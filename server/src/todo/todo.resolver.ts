@@ -42,6 +42,7 @@ export class TodoResolver {
     return this.todoService.getTodoLists(user);
   }
 
+  @UseGuards(RoleGuard)
   @Query((returns) => [TodoList])
   async getTodoListsWithPagiantion(
     @Args('args') args: TodoListPaginationInput,
@@ -50,21 +51,25 @@ export class TodoResolver {
     return this.todoService.getTodoListsWithPagination(args, user);
   }
 
+  @UseGuards(RoleGuard)
   @Query((returns) => TodoList)
   async getTodoList(@Args('id') id: string) {
     return this.todoService.getTodoList(id);
   }
 
+  @UseGuards(RoleGuard)
   @Query((returns) => [Category])
   async getUserCategories(@CurrentUser() user: string) {
     return this.todoService.getUserCategories(user);
   }
 
+  @UseGuards(RoleGuard)
   @Mutation((returns) => User)
   async addUser(@Args('userData') userData: AddUserInput) {
     return this.todoService.addUser(userData);
   }
 
+  @UseGuards(RoleGuard)
   @Mutation((returns) => Todo)
   async addTodoList(
     @Args('todoListData') todoListData: TodoListInput,
@@ -73,11 +78,13 @@ export class TodoResolver {
     return this.todoService.addTodoList(todoListData, user);
   }
 
+  @UseGuards(RoleGuard)
   @Mutation((returns) => Todo)
   async addTodo(@Args('todoData') todoData: TodoInput) {
     return this.todoService.addTodo(todoData);
   }
 
+  @UseGuards(RoleGuard)
   @Mutation((returns) => Category)
   async addCategory(
     @Args('catData') catData: AddCategoryInput,
@@ -86,21 +93,26 @@ export class TodoResolver {
     return this.todoService.addCategory(catData, user);
   }
 
+  @UseGuards(RoleGuard)
   @Mutation((returns) => Todo)
   async updateTodo(@Args('id') id: string) {
     return this.todoService.updateTodo(id);
   }
 
+  @UseGuards(RoleGuard)
   @Mutation((returns) => Todo)
   async deleteTodo(@Args('id') id: string) {
     return this.todoService.deleteTodo(id);
   }
 
+  @UseGuards(RoleGuard)
   @Mutation((returns) => TodoList)
   async deleteTodoList(@Args('id') id: string) {
     return this.todoService.deleteTodoList(id);
   }
 
+  //do not add the guard for this too
+  //called from the server when the refresh token is expired
   @Mutation((returns) => User)
   async updateUserRefreshToken(
     @Args('token') token: string,

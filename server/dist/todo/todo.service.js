@@ -35,7 +35,6 @@ let TodoService = class TodoService {
                 email,
             },
         });
-        console.log(res.refreshToken);
         return res.refreshToken;
     }
     async getTodoLists(email) {
@@ -140,7 +139,6 @@ let TodoService = class TodoService {
         });
     }
     async updateUserRefreshToken(token, user) {
-        console.log(user);
         return await this.prisma.user.upsert({
             where: { email: user },
             update: {

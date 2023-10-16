@@ -114,6 +114,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getTodoLists", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Query)((returns) => [todo_model_1.TodoList]),
     __param(0, (0, graphql_1.Args)('args')),
     __param(1, (0, currentuser_decorator_1.CurrentUser)()),
@@ -122,6 +123,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getTodoListsWithPagiantion", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Query)((returns) => todo_model_1.TodoList),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),
@@ -129,6 +131,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getTodoList", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Query)((returns) => [todo_model_1.Category]),
     __param(0, (0, currentuser_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
@@ -136,6 +139,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getUserCategories", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.User),
     __param(0, (0, graphql_1.Args)('userData')),
     __metadata("design:type", Function),
@@ -143,6 +147,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "addUser", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.Todo),
     __param(0, (0, graphql_1.Args)('todoListData')),
     __param(1, (0, currentuser_decorator_1.CurrentUser)()),
@@ -151,6 +156,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "addTodoList", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.Todo),
     __param(0, (0, graphql_1.Args)('todoData')),
     __metadata("design:type", Function),
@@ -158,6 +164,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "addTodo", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.Category),
     __param(0, (0, graphql_1.Args)('catData')),
     __param(1, (0, currentuser_decorator_1.CurrentUser)()),
@@ -166,6 +173,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "addCategory", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.Todo),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),
@@ -173,6 +181,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "updateTodo", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.Todo),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),
@@ -180,6 +189,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "deleteTodo", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.TodoList),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),

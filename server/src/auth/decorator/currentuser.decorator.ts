@@ -16,7 +16,6 @@ export const CurrentUser = createParamDecorator(
     if (decode) {
       return decode?.payload.email;
     }
-    console.log(decode);
     return '';
   },
 );

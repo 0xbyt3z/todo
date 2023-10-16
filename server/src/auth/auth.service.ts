@@ -7,10 +7,10 @@ import { decode } from 'jsonwebtoken';
 import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
 
-export interface TypeJWT {
+export type TypeJWT = {
   header: { kid: string; alg: string };
   payload: { iss: string; email: string; preferred_username: string };
-}
+};
 
 @Injectable()
 export class AuthService {
@@ -73,7 +73,6 @@ export class AuthService {
       //the session may not available at the time of the request
       return false;
     }
-
     try {
       const secret = await firstValueFrom(
         this.getPublicKey(this.getTokenDecoded(token)),

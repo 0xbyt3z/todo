@@ -29,7 +29,6 @@ export class TodoService {
         email,
       },
     });
-    console.log(res.refreshToken);
     return res.refreshToken;
   }
 
@@ -149,7 +148,6 @@ export class TodoService {
   }
 
   async updateUserRefreshToken(token: string, user: string) {
-    console.log(user);
     return await this.prisma.user.upsert({
       where: { email: user },
       update: {

@@ -5,9 +5,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma/schema.prisma ./
-COPY . .
 
 RUN npm install
+
+COPY . .
 
 
 FROM node:18-alpine as build

@@ -153,7 +153,7 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
             d.Todo.map((i, index) => {
               return (
                 <>
-                  <div className="flex justify-between group">
+                  <div key={index} className="flex justify-between group">
                     <div className="flex items-center">
                       <Checkbox onClick={() => updateTodo({ variables: { id: i.id } })} defaultChecked={i.completed} className="w-5 h-5 mr-2" />
                       {i.remarks && <div className="absolute ml-6 p-2 py-1 text-xs hidden group-hover:block border-[1px] bg-white w-fit mt-10">{i.remarks}</div>}
@@ -212,7 +212,7 @@ export default function ToDoContainer({ d, invokeFetch }: { d: z.infer<typeof To
                           <SelectItem value="notset">None</SelectItem>
                           {categories &&
                             categories.getUserCategories.map((i: { name: string; color: string }) => (
-                              <SelectItem value={i.name} className={`text-${i.color}-500 capitalize`}>
+                              <SelectItem key={i.name} value={i.name} className={`text-${i.color}-500 capitalize`}>
                                 {i.name}
                               </SelectItem>
                             ))}{" "}

@@ -1,10 +1,17 @@
 "use client";
 
 import { ApolloClient, InMemoryCache, ApolloProvider, gql, createHttpLink } from "@apollo/client";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export function ApolloWrapper({ children }: React.PropsWithChildren) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  if (status == "authenticated") {
+    if (session?.user.accessToken === undefined) {
+      console.log("Forced the client to signIn");
+      signIn("keycloak");
+    }
+  }
   const httpLink = createHttpLink({
     uri: "http://localhost:3001/graphql",
     headers: { authorization: session ? `Bearer ${session.user.accessToken}` : "" },
