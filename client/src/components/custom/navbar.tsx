@@ -11,10 +11,6 @@ function NavBar() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  useEffect(() => {
-    console.log(session);
-  }, [status]);
-
   return (
     <div className="w-full h-16 flex items-center justify-between">
       <div>
