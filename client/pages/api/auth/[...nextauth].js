@@ -67,7 +67,7 @@ const renewAccessToken = async (token) => {
     formBody.push(encodedKey + "=" + encodedValue);
   }
   formBody = formBody.join("&");
-  const res = await fetch("http://localhost:8080/realms/myrealm/protocol/openid-connect/token", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/myrealm/protocol/openid-connect/token`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",

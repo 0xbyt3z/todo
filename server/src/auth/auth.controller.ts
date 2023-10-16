@@ -13,7 +13,8 @@ export class AuthController {
   @UseGuards(RoleGuard)
   @Get()
   simpleGet() {
-    return 'this route is protected';
+    // return 'this route is protected';
+    return process.env.KEYCLOAK_BASE_URL;
   }
 
   @Get('pub')

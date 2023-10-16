@@ -1,5 +1,4 @@
 import { PrismaService } from './../prisma.service';
-import { JWK } from 'jwk-to-pem';
 import { ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { OidcService } from './oidc/oidc.service';
@@ -25,7 +24,7 @@ export class AuthService {
     // decode the JWT
     const jwt = decode(token, {
       complete: true,
-    }) as TypeJWT;
+    }) as unknown as TypeJWT;
 
     return jwt;
   }

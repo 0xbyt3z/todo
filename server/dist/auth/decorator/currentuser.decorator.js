@@ -13,7 +13,9 @@ exports.CurrentUser = (0, common_1.createParamDecorator)((data, context) => {
             token = s.split(' ')[1];
         }
     });
-    const decode = jsonwebtoken_1.default.decode(token, { complete: true });
+    const decode = jsonwebtoken_1.default.decode(token, {
+        complete: true,
+    });
     if (decode) {
         return decode?.payload.email;
     }
