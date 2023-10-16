@@ -23,6 +23,7 @@ const cat_input_1 = require("./dto/cat.input");
 const common_1 = require("@nestjs/common");
 const currentuser_decorator_1 = require("../auth/decorator/currentuser.decorator");
 const role_guard_1 = require("../auth/role.guard");
+const roles_decorator_1 = require("../auth/decorator/roles.decorator");
 let TodoResolver = class TodoResolver {
     constructor(todoService) {
         this.todoService = todoService;
@@ -206,6 +207,7 @@ __decorate([
 ], TodoResolver.prototype, "updateUserRefreshToken", null);
 exports.TodoResolver = TodoResolver = __decorate([
     (0, graphql_1.Resolver)(),
+    (0, roles_decorator_1.Roles)(['todo-access']),
     __metadata("design:paramtypes", [todo_service_1.TodoService])
 ], TodoResolver);
 //# sourceMappingURL=todo.resolver.js.map

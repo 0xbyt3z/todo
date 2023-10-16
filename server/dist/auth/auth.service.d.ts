@@ -2,7 +2,7 @@ import { PrismaService } from './../prisma.service';
 import { ExecutionContext } from '@nestjs/common';
 import { OidcService } from './oidc/oidc.service';
 import { JwtService } from '@nestjs/jwt';
-export interface TypeJWT {
+export type TypeJWT = {
     header: {
         kid: string;
         alg: string;
@@ -12,7 +12,7 @@ export interface TypeJWT {
         email: string;
         preferred_username: string;
     };
-}
+};
 export declare class AuthService {
     private readonly jwtService;
     readonly oidcService: OidcService;

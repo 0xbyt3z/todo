@@ -26,6 +26,8 @@ services:
     restart: on-failure
     environment:
       - DATABASE_URL=postgresql://user:password@postgres:5432/postgres?schema=public
+      - KEYCLOAK_BASE_URL="http://keycloak:8080"
+      - KEYCLOAK_REALM="myrealm"
     depends_on:
       - postgres
   postgres:

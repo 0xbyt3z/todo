@@ -12,26 +12,62 @@ var RoleGuard_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleGuard = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const graphql_1 = require("@nestjs/graphql");
 const jwt_1 = require("@nestjs/jwt");
 const oidc_service_1 = require("./oidc/oidc.service");
-const auth_service_1 = require("./auth.service");
+const core_1 = require("@nestjs/core");
+const rxjs_1 = require("rxjs");
+const roles_decorator_1 = require("./decorator/roles.decorator");
 let RoleGuard = RoleGuard_1 = class RoleGuard {
-    constructor(jwtService, oidcService, authService) {
+    constructor(jwtService, reflector, oidcService, configService) {
         this.jwtService = jwtService;
+        this.reflector = reflector;
         this.oidcService = oidcService;
-        this.authService = authService;
+        this.configService = configService;
         this.logger = new common_1.Logger(RoleGuard_1.name);
     }
     async canActivate(context) {
-        const isUserValid = this.authService.validate(context);
-        return isUserValid;
+        const requiredRoles = this.reflector.get(roles_decorator_1.Roles, context.getClass());
+        if (!requiredRoles || requiredRoles.length === 0) {
+            return true;
+        }
+        const ctx = graphql_1.GqlExecutionContext.create(context);
+        const request = ctx.getContext().req;
+        if (!request.headers.authorization ||
+            request.headers.authorization.split(' ').length < 2 ||
+            request.headers.authorization.split(' ')[0] != 'Bearer') {
+            return false;
+        }
+        const token = request.headers.authorization.split(' ')[1];
+        const decoded = this.jwtService.decode(token, { complete: true });
+        if (!decoded) {
+            return false;
+        }
+        const secret = await (0, rxjs_1.firstValueFrom)(this.oidcService.getPublicKey(decoded.header.kid, decoded.header.alg));
+        const issuer = await (0, rxjs_1.firstValueFrom)(this.oidcService.getIssuerUrl());
+        try {
+            this.jwtService.verify(token, {
+                secret: secret,
+                issuer: issuer,
+            });
+        }
+        catch (e) {
+            this.logger.warn(e);
+            return false;
+        }
+        if (decoded.payload.resource_access?.[decoded.payload.azp]) {
+            return decoded.payload.resource_access[decoded.payload.azp].roles.some((availableRole) => requiredRoles.includes(availableRole));
+        }
+        return false;
     }
 };
 exports.RoleGuard = RoleGuard;
 exports.RoleGuard = RoleGuard = RoleGuard_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService,
+        core_1.Reflector,
         oidc_service_1.OidcService,
-        auth_service_1.AuthService])
+        config_1.ConfigService])
 ], RoleGuard);
 //# sourceMappingURL=role.guard.js.map

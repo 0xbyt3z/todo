@@ -1,12 +1,14 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { OidcService } from './oidc/oidc.service';
-import { AuthService } from './auth.service';
+import { Reflector } from '@nestjs/core';
 export declare class RoleGuard implements CanActivate {
     private readonly jwtService;
+    private readonly reflector;
     private readonly oidcService;
-    private readonly authService;
+    private readonly configService;
     private logger;
-    constructor(jwtService: JwtService, oidcService: OidcService, authService: AuthService);
+    constructor(jwtService: JwtService, reflector: Reflector, oidcService: OidcService, configService: ConfigService);
     canActivate(context: ExecutionContext): Promise<boolean>;
 }

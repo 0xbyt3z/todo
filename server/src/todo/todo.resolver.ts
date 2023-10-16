@@ -5,15 +5,19 @@ import { AddUserInput, GetUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
 import { TodoListInput, TodoListPaginationInput } from './dto/todolist.input';
 import { AddCategoryInput } from './dto/cat.input';
-import { UseGuards } from '@nestjs/common';
+import { SetMetadata, UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorator/currentuser.decorator';
 import { RoleGuard } from 'src/auth/role.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @Resolver()
+@Roles(['todo-access'])
 export class TodoResolver {
   constructor(private readonly todoService: TodoService) {}
 
   @UseGuards(RoleGuard)
+  //setmetadata can be used to set custom metadata for individul routes
+  //but reflector decorator can be used to metadata globally
   @Query((returns) => String)
   async currentUser(@CurrentUser() user: any) {
     return user;
@@ -25,6 +29,7 @@ export class TodoResolver {
   }
 
   @UseGuards(RoleGuard)
+  // @SetMetadata('roles', 'manage-account')
   @Query((returns) => User)
   async getUser(@CurrentUser() email: string) {
     return this.todoService.getUser(email);
