@@ -35,7 +35,7 @@ function NavBar() {
         )}
       </div>
       <div className="flex items-center">
-        {session?.user?.name}
+        {session?.user?.name}{process.env.NEXT_PUBLIC_URL}
         {status == "authenticated" ? (
           <Button variant={"link"} onClick={() => signOut()}>
             Logout

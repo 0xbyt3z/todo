@@ -12,8 +12,11 @@ export function ApolloWrapper({ children }: React.PropsWithChildren) {
       signIn("keycloak");
     }
   }
+
+  console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
+
   const httpLink = createHttpLink({
-    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
+    uri: `${process?.env?.NEXT_PUBLIC_BACKEND_URL}/graphql`,
     headers: { authorization: session ? `Bearer ${session.user.accessToken}` : "" },
   });
   const client = new ApolloClient({

@@ -19,7 +19,9 @@ export const authOptions = {
       await fetch(logOutUrl);
     },
   },
-  pages: {},
+  pages: {
+    newUser: "/auth/new-user",
+  },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       return true;
@@ -30,6 +32,8 @@ export const authOptions = {
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
+      //create a new user or fail if the user exists
+      createUser(token);
       //check weather the jwt is expired or not
       const isExpired = jsonwebtoken.decode(token.access_token)?.exp * 1000 <= Date.now();
       if (isExpired) {
@@ -46,6 +50,10 @@ export const authOptions = {
         //guess it concern about the acr feild in the JWT
         token.id_token = account.id_token;
         token.access_token = account.access_token;
+      }
+      if (isNewUser) {
+        //try to create the new user for this user in the database
+        console.log("isNewUser", isNewUser);
       }
       return token;
     },
@@ -81,3 +89,43 @@ const renewAccessToken = async (token) => {
   console.log("New access token created");
   return res;
 };
+
+function createUser(token) {
+  const email = jsonwebtoken.decode(token.access_token)?.email;
+  if (!email) {
+    return;
+  }
+  // Define the GraphQL mutation
+  const mutation = `
+    mutation AddUser($user: AddUserInput!) {
+      addUser(userData: $user) {
+        email
+      }
+    }
+  `;
+
+  // Define the variables for the mutation
+  const variables = {
+    user: {
+      email,
+    },
+  };
+
+  // Define the GraphQL endpoint URL
+  const graphqlEndpoint = `${process.env?.NEXT_PUBLIC_BACKEND_URL}/graphql`;
+
+  // Perform the fetch request
+  fetch(graphqlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // Add any necessary authentication headers here
+    },
+    body: JSON.stringify({
+      query: mutation,
+      variables: variables,
+    }),
+  }).then((response) => {
+    return response.json();
+  });
+}
