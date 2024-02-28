@@ -127,7 +127,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "getUserCategories", null);
 __decorate([
-    (0, common_1.UseGuards)(role_guard_1.RoleGuard),
     (0, graphql_1.Mutation)((returns) => todo_model_1.User),
     __param(0, (0, graphql_1.Args)('userData')),
     __metadata("design:type", Function),

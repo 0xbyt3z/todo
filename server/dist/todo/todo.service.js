@@ -79,11 +79,15 @@ let TodoService = class TodoService {
         });
     }
     async addTodoList(data, user) {
-        return await this.prisma.todoList.create({
+        return await this.prisma.todoList
+            .create({
             data: {
                 title: data.title,
                 user: { connect: { email: user } },
             },
+        })
+            .catch((e) => {
+            console.log(e.code);
         });
     }
     async addTodo(data) {

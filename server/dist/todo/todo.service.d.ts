@@ -81,7 +81,7 @@ export declare class TodoService {
         isBanned: boolean;
         created_at: Date;
     }>;
-    addTodoList(data: TodoListInput, user: string): Promise<{
+    addTodoList(data: TodoListInput, user: string): Promise<void | {
         id: string;
         uId: string;
         title: string;

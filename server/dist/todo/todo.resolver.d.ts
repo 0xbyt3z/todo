@@ -82,7 +82,7 @@ export declare class TodoResolver {
         isBanned: boolean;
         created_at: Date;
     }>;
-    addTodoList(todoListData: TodoListInput, user: string): Promise<{
+    addTodoList(todoListData: TodoListInput, user: string): Promise<void | {
         id: string;
         uId: string;
         title: string;

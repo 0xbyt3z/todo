@@ -4,6 +4,7 @@ import { AddUserInput, GetUserInput } from './dto/user.input';
 import { TodoInput } from './dto/todo.input';
 import { TodoListInput, TodoListPaginationInput } from './dto/todolist.input';
 import { AddCategoryInput } from './dto/cat.input';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TodoService {
@@ -81,12 +82,24 @@ export class TodoService {
   }
 
   async addTodoList(data: TodoListInput, user: string) {
-    return await this.prisma.todoList.create({
-      data: {
-        title: data.title,
-        user: { connect: { email: user } },
-      },
-    });
+    return await this.prisma.todoList
+      .create({
+        data: {
+          title: data.title,
+          user: { connect: { email: user } },
+        },
+      })
+      .catch((e) => {
+        console.log(e.code);
+        // if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        //   // The .code property can be accessed in a type-safe manner
+        //   if (e.code === 'P2002') {
+        //     console.log(
+        //       'There is a unique constraint violation, a new user cannot be created with this email',
+        //     );
+        //   }
+        // }
+      });
   }
 
   async addTodo(data: TodoInput) {

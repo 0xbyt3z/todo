@@ -61,7 +61,6 @@ export class TodoResolver {
     return this.todoService.getUserCategories(user);
   }
 
-  @UseGuards(RoleGuard)
   @Mutation((returns) => User)
   async addUser(@Args('userData') userData: AddUserInput) {
     return this.todoService.addUser(userData);
